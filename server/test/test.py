@@ -191,3 +191,76 @@
 # import uuid, time
 # print(uuid.uuid5(uuid.NAMESPACE_URL, str(time.time())))
 # 81b19b9a-a4cb-531e-b725-741fe2cf890c
+
+
+# def func1():
+#     return 1
+
+# def func2():
+#     return 2
+
+# def func_mapping(ins):
+#     map = {
+#         '10': func1(),
+#         '11': func2()
+#     }
+#     return map.get(ins)
+
+# val = func_mapping('10')
+# print(val)
+
+# class A:
+#     def __init__(self):
+#         self.x = 0
+#         self.y = 0
+#         self.heading = 0
+
+#     def instructions_mapping(self, instruction_code):
+#         # 指令映射，将不同的指令映射为不同的操作函数
+#         # mapping = {
+#         #     '1001': self.turn_left(),
+#         #     '1002': self.turn_right(),
+#         #     '2001': self.go_ahead()
+#         #     }
+#         if instruction_code == 1001:
+#             return self.turn_left()
+#         elif instruction_code == 1002:
+#             return self.turn_right()
+#         else:
+#             return self.go_ahead()
+#         # return mapping.get(str(instruction_code))
+
+#     def turn_left(self):
+#         print('进入left')
+#         self.heading -= 5
+    
+#     def turn_right(self):
+#         print('进入right')
+#         self.heading += 5
+    
+#     def go_ahead(self):
+#         print('进入go ahead')
+#         self.x += 1
+#         self.y += 1
+    
+#     def get_status(self):
+#         print(self.heading, self.x, self.y)
+
+#     def test_instruction(self):
+#         ins = [[1002, 2001], [2001, 1001]]
+#         for i in ins:
+#             if len(i) > 0:
+#                 for step in i:
+#                     print('this step: ', step)
+#                     self.instructions_mapping(step)
+#                     self.get_status()
+
+# atest = A()
+# atest.get_status()
+# atest.test_instruction()
+
+import math
+def calc_prob(DCPA):
+    p = math.exp(DCPA * 1.05 * (-1) / 1000)
+    return p     
+print(calc_prob(1500))

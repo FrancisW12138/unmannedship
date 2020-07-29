@@ -73,7 +73,7 @@ def ComputeDCPA(pos1, heading1, speed1, pos2, heading2, speed2):
     deltapos[1] = TransBCD.DeltaLat2DeltaMeter(deltapos[1])
     # print("\ndeltapos: ", deltapos)
     DCPA = np.linalg.norm(deltapos)
-    # print("DCPA: ", DCPA)
+    print("DCPA: ", DCPA)
     return DCPA
 
 
@@ -231,13 +231,13 @@ def ComputeDynamicDCPA(pos1, heading1, speed1, pos2, heading2, speed2, tc, speed
 
     
 # @test
-mydcpa = ComputeDCPA([123, 35], 10, 9.8, [123.1, 35], 350, 10.2)
-print('原始MyDCPA: ', mydcpa)
-myddcpa10 = ComputeDynamicDCPA([123, 35], 10, 9.8, [123.1, 35], 350, 10.2, 20, 7)
-print('短时间减速DCPA: ', myddcpa10)
-myddcpa20 = ComputeDynamicDCPA([123, 35], 10, 9.8, [123.1, 35], 350, 10.2, 80, 7)
-print('长时间减速DCPA: ', myddcpa20)
-myddcpa30 = ComputeDynamicDCPA([123, 35], 20, 9.8, [123.1, 35], 350, 10.2, 80, 7)
-print('减速加转向DCPA: ', myddcpa30)
+# mydcpa = ComputeDCPA([123, 35], 10, 9.8, [123.1, 35], 350, 10.2)
+# print('原始MyDCPA: ', mydcpa)
+# myddcpa10 = ComputeDynamicDCPA([123, 35], 10, 9.8, [123.1, 35], 350, 10.2, 20, 7)
+# print('短时间减速DCPA: ', myddcpa10)
+# myddcpa20 = ComputeDynamicDCPA([123, 35], 10, 9.8, [123.1, 35], 350, 10.2, 80, 7)
+# print('长时间减速DCPA: ', myddcpa20)
+# myddcpa30 = ComputeDynamicDCPA([123, 35], 20, 9.8, [123.1, 35], 350, 10.2, 80, 7)
+# print('减速加转向DCPA: ', myddcpa30)
 # mytcpa = ComputeTCPA([123, 35.1], 90, 10, [123.1, 35], 270, 7)
 # print('MyTCPA: ', mytcpa)

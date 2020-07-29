@@ -243,8 +243,9 @@ def coord_conv(x, y, theta):
     return [x_0, y_0]
 
 
-def A1(a1, v1, pos1, a2, v2, pos2):
+def HLD(a1, v1, pos1, a2, v2, pos2):
     """
+    Human-Like Decition
     : a1: alpha, the course of ship1,
     : v1: the velocity of ship1,
     : pos1: the position of ship1, pos looks like [123.21, 31.32],
@@ -260,60 +261,71 @@ def A1(a1, v1, pos1, a2, v2, pos2):
     deltat = 10
 
     Dthre = 1852 # DCPA 阈值, 1海里 = 1.852 KM
-    DCPA = 0
-    break_flag_1 = False
-    # 让路船先减速, 判断能否有效避碰（DCPA> Dthre）
-    for i in range(0, int(0.5/deltav), 1):
-        v1new = v1 - i * v1delta
-        for j in range(0, int(100/deltat), 1):
-            tc = j * deltat
-            DCPA = CPA.ComputeDynamicDCPA(pos1, a1, v1, pos2, a2, v2, tc, v1new)
-            print('减速中, DCPA, tc: ', DCPA, tc)
-            if DCPA > Dthre:
-                break_flag_1 = True
-                break
-        if break_flag_1 == True:
-            print('减速阶段已成功避碰.')
-            break
-        v1new = v1 # 回正v1
-    
-    # 如果充分减速（速度减至0.5*v1）后仍不能有效避碰（DCPA>Dthre），则开始计算右转
-    Athre = 45
-    deltaa = 5
+    # Dthre = 1000 # DCPA 阈值, 1海里 = 1.852 KM
+    # DCPA = 0
+    DCPA = CPA.ComputeDCPA(pos1, a1, v1, pos2, a2, v2)
+    print('Current DCPA: ', DCPA)
     if DCPA < Dthre:
-        print('预测通过减速无法成功避碰，准备转向...')
-        DCPA = 0
-        v1new = 0.5 * v1
-        tc = 0
-        a1_temp = a1
-        break_flag_2 = False
-        for i in range(0, int(Athre / deltaa), 1):
-            a1_temp = a1_temp + i * deltaa
+        break_flag_1 = False
+        # 让路船先减速, 判断能否有效避碰（DCPA> Dthre）
+        for i in range(0, int(0.5/deltav), 1):
+            v1new = v1 - i * v1delta
             for j in range(0, int(100/deltat), 1):
                 tc = j * deltat
-                DCPA = CPA.ComputeDynamicDCPA(pos1, a1_temp, v1, pos2, a2, v2, tc, v1new)
-                print('转向中，DCPA, alpha, tc:', DCPA, a1_temp, tc)
+                DCPA = CPA.ComputeDynamicDCPA(pos1, a1, v1, pos2, a2, v2, tc, v1new)
+                print('减速中, DCPA, tc: ', DCPA, tc)
                 if DCPA > Dthre:
-                    break_flag_2 = True
+                    break_flag_1 = True
                     break
-            if break_flag_2 == True:
-                print('转向阶段成功避碰')
+            if break_flag_1 == True:
+                print('减速阶段已成功避碰.')
                 break
-            a1_temp = a1 # 回正a1
-        # 判断充分右转后能否避碰
+            v1new = v1 # 回正v1
+        
+        # 如果充分减速（速度减至0.5*v1）后仍不能有效避碰（DCPA>Dthre），则开始计算右转
+        Athre = 45
+        deltaa = 5
         if DCPA < Dthre:
-            # 避碰失败 怎么办
-            print('避碰失败.')
-            tc, a1_temp, v1new
-            pass
-        else:
-            # 避碰成功
-            return tc, a1_temp, v1new
-    else: 
-        return tc, 0, v1new
+            print('预测通过减速无法成功避碰，准备转向...')
+            DCPA = 0
+            v1new = 0.5 * v1
+            tc = 0
+            a1_temp = a1
+            break_flag_2 = False
+            for i in range(0, int(Athre / deltaa), 1):
+                a1_temp = a1_temp + i * deltaa
+                for j in range(0, int(100/deltat), 1):
+                    tc = j * deltat
+                    DCPA = CPA.ComputeDynamicDCPA(pos1, a1_temp, v1, pos2, a2, v2, tc, v1new)
+                    print('转向中，DCPA, alpha, tc:', DCPA, a1_temp, tc)
+                    if DCPA > Dthre:
+                        break_flag_2 = True
+                        break
+                if break_flag_2 == True:
+                    print('转向阶段成功避碰')
+                    break
+                a1_temp = a1 # 回正a1
+            # 判断充分右转后能否避碰
+            if DCPA < Dthre:
+                # 避碰失败 怎么办
+                print('避碰失败.')
+                # TODO
+                return 0, 0, v1
+                # tc, a1_temp, v1new
+                pass
+            else:
+                # 避碰成功
+                return tc, a1_temp, v1new
+        else: 
+            return tc, 0, v1new
+    else:
+        # DCPA > Dthre
+        return 0, 0, v1
 
 
 
-mtc, ma, mv = A1(10, 9.8, [123, 35], 350, 10.2, [123.1, 35])
+# mtc, ma, mv = HLD(10, 9.8, [123, 35], 350, 10.2, [123.1, 35])
+# mtc, ma, mv = HLD(10, 9.8, [122.995, 34.995], 350, 10, [123.051, 35.001])
+# print(mtc, ma, mv)
 
 
