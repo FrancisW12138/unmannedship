@@ -3,7 +3,7 @@ let map,ship1,ship2;
 
 $(function(){
 	map = new BMap.Map("map"); // 创建Map实例
-	map.centerAndZoom(new BMap.Point(123.06, 31), 14); // 初始化地图,设置中心点坐标和地图级别
+	map.centerAndZoom(new BMap.Point(123, 35.05), 15); // 初始化地图,设置中心点坐标和地图级别
 	map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
     let shipIcon1 = new BMap.Icon("/static/res/ship/freighter_min.png", new BMap.Size(150, 25));
     ship1 = new BMap.Marker(new BMap.Point(0, 0),{icon:shipIcon1});

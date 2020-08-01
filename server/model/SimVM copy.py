@@ -15,7 +15,7 @@ sys.path.append("..")
 import math, random, time, copy, uuid, threading
 import TransBCD, DrawVoAreas, opt_db, CPA
 import HumanActivity as HA
-# import CreateEncounterSituation
+import CreateEncounterSituation
 
 class SimShip:
     # 仿真船舶决策类，实现一步决策
@@ -41,6 +41,12 @@ class SimShip:
         # self.instructions_status
         pass
     
+    # def get_recorder(self):
+    #     return {
+    #         'speed': self.speed, 
+    #         'heading': self.heading,
+    #     }
+
     def update_tick(self):
         self.tick += self.interval
 
@@ -147,6 +153,7 @@ class SimShip:
             # TODO 未作出决策 或者说决策的内容为空 或者决策指令已经执行完毕
             self.go_ahead()
 
+
     def update_dis(self):
         if self.id == '10086':
             that_ship = self.simVM.SimShipRegistered[1]
@@ -221,6 +228,7 @@ class SimShip:
         else:
             self.go_ahead()
             return 0
+
 
     def SyncClock(self, simVM):
         simVM.SysClock = self.tick
@@ -300,35 +308,35 @@ class SimShip:
             AllShipStatusInSimVM.append({'status': status, 'id': ship.id})
         return AllShipStatusInSimVM
 
-    def MakeDecision(self, status=self.GetAllShipStatusInSimVM()):
-        # 现在案例只有两船
-        shipStatus = []
-        for item in status:
-            if item['id'] == self.id:
-                pass
-            else:
-                shipStatus = item['status']
-        GiveWay = HA.JudgeGiveWay([self.lon, self.lat], [shipStatus['lon'], shipStatus['lat']])
-        if GiveWay:
-            tc, delta_a1, v1new = HA.A1(self.heading, self.speed, [self.lon, self.lat], shipStatus['heading'], shipStatus['speed'], [shipStatus['lon'], shipStatus['lat']])
-            if delta_a1 != 0:
-                # 转向 然后前行
-                self.Turn(delta_a1)
-                self.SetSpeed(v1new)
-                for i in range(int(tc/self.interval)):
-                    x, y = self.Go()
-                    self.SetPosition(x, y)
-                    # TODO 借鉴v1 添加状态 append
-                    # 下一步要添加进去
-                pass
-            else:
-                # 通过减速即可避碰成功
+    # def MakeDecision(self, status=self.GetAllShipStatusInSimVM()):
+    #     # 现在案例只有两船
+    #     shipStatus = []
+    #     for item in status:
+    #         if item['id'] == self.id:
+    #             pass
+    #         else:
+    #             shipStatus = item['status']
+    #     GiveWay = HA.JudgeGiveWay([self.lon, self.lat], [shipStatus['lon'], shipStatus['lat']])
+    #     if GiveWay:
+    #         tc, delta_a1, v1new = HA.A1(self.heading, self.speed, [self.lon, self.lat], shipStatus['heading'], shipStatus['speed'], [shipStatus['lon'], shipStatus['lat']])
+    #         if delta_a1 != 0:
+    #             # 转向 然后前行
+    #             self.Turn(delta_a1)
+    #             self.SetSpeed(v1new)
+    #             for i in range(int(tc/self.interval)):
+    #                 x, y = self.Go()
+    #                 self.SetPosition(x, y)
+    #                 # TODO 借鉴v1 添加状态 append
+    #                 # 下一步要添加进去
+    #             pass
+    #         else:
+    #             # 通过减速即可避碰成功
 
-                pass
-        else:
-            # 我是直航船
-            x, y = self.GO()
-            pass
+    #             pass
+    #     else:
+    #         # 我是直航船
+    #         x, y = self.GO()
+    #         pass
 
 class SimVM:
     def __init__(self, id, interval = 0.5, timeratio = 10, SysClock = 0):
@@ -600,61 +608,61 @@ class SimVM:
 
 
 # 这个函数用于外部调用
-def RunVM(initData, initStatus4DrawLines='random', interval = 0.2, timeRatio = 100, runTimes = -1):
-    """ 
-    : initData: data that init ships in this VM, and initData looks like :
-    initData = {
-        ship0: {
-            ShipID: "10086",
-            Tick: 0,
-            Lon: 123,
-            Lat: 35,
-            Speed: 10,
-            Heading: 90
-        },
-        ship1: {ShipID: "10010", Tick: 0, Lon: 123.1, Lat: 35.01, Speed: 7, Heading: 90}
-    }
-    : interval = 0.2,
-    : timeRatio = 100,
-    : runTimes = -1 : running times, -1 to loop,
-    : return: VMData
-    """
-    GenVMID = time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
-    # print("VMID: ", GenVMID)
-    VM = SimVM(id = GenVMID, interval = interval, timeratio = timeRatio)
+# def RunVM(initData, initStatus4DrawLines='random', interval = 0.2, timeRatio = 100, runTimes = -1):
+#     """ 
+#     : initData: data that init ships in this VM, and initData looks like :
+#     initData = {
+#         ship0: {
+#             ShipID: "10086",
+#             Tick: 0,
+#             Lon: 123,
+#             Lat: 35,
+#             Speed: 10,
+#             Heading: 90
+#         },
+#         ship1: {ShipID: "10010", Tick: 0, Lon: 123.1, Lat: 35.01, Speed: 7, Heading: 90}
+#     }
+#     : interval = 0.2,
+#     : timeRatio = 100,
+#     : runTimes = -1 : running times, -1 to loop,
+#     : return: VMData
+#     """
+#     GenVMID = time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
+#     # print("VMID: ", GenVMID)
+#     VM = SimVM(id = GenVMID, interval = interval, timeratio = timeRatio)
 
-    if initStatus4DrawLines == 'random':
-        n_ships = 2
-        pos, course, speed = CreateEncounterSituation.Create(n_ships)
-        for i in range(n_ships):
-            VM.addShip(ShipID='STRI'+'-{}'.format(i), Lon=pos[i][0], Lat=pos[i][1], Speed=speed[i], Heading=course[i])
-    else: 
-        VM.addShip(
-            ShipID = initData["ship0"]["ShipID"], 
-            Tick = initData["ship0"]["Tick"],
-            Lon = initData["ship0"]["Lon"],
-            Lat = initData["ship0"]["Lat"],
-            Speed = initData["ship0"]["Speed"],
-            Heading = initData["ship0"]["Heading"]
-        ) # 主船
-        VM.addShip(ShipID = initData["ship1"]["ShipID"], Tick = initData["ship1"]["Tick"], Lon = initData["ship1"]["Lon"], Lat = initData["ship1"]["Lat"], Speed = initData["ship1"]["Speed"], Heading = initData["ship1"]["Heading"]) # 目标船，客船
+#     if initStatus4DrawLines == 'random':
+#         n_ships = 2
+#         pos, course, speed = CreateEncounterSituation.Create(n_ships)
+#         for i in range(n_ships):
+#             VM.addShip(ShipID='STRI'+'-{}'.format(i), Lon=pos[i][0], Lat=pos[i][1], Speed=speed[i], Heading=course[i])
+#     else: 
+#         VM.addShip(
+#             ShipID = initData["ship0"]["ShipID"], 
+#             Tick = initData["ship0"]["Tick"],
+#             Lon = initData["ship0"]["Lon"],
+#             Lat = initData["ship0"]["Lat"],
+#             Speed = initData["ship0"]["Speed"],
+#             Heading = initData["ship0"]["Heading"]
+#         ) # 主船
+#         VM.addShip(ShipID = initData["ship1"]["ShipID"], Tick = initData["ship1"]["Tick"], Lon = initData["ship1"]["Lon"], Lat = initData["ship1"]["Lat"], Speed = initData["ship1"]["Speed"], Heading = initData["ship1"]["Heading"]) # 目标船，客船
     
-    # VM.addShip(
-    #     ShipID = initData["ship0"]["ShipID"], 
-    #     Tick = initData["ship0"]["Tick"],
-    #     Lon = initData["ship0"]["Lon"],
-    #     Lat = initData["ship0"]["Lat"],
-    #     Speed = initData["ship0"]["Speed"],
-    #     Heading = initData["ship0"]["Heading"]
-    # ) # 主船
-    # VM.addShip(ShipID = initData["ship1"]["ShipID"], Tick = initData["ship1"]["Tick"], Lon = initData["ship1"]["Lon"], Lat = initData["ship1"]["Lat"], Speed = initData["ship1"]["Speed"], Heading = initData["ship1"]["Heading"]) # 目标船，客船
+#     # VM.addShip(
+#     #     ShipID = initData["ship0"]["ShipID"], 
+#     #     Tick = initData["ship0"]["Tick"],
+#     #     Lon = initData["ship0"]["Lon"],
+#     #     Lat = initData["ship0"]["Lat"],
+#     #     Speed = initData["ship0"]["Speed"],
+#     #     Heading = initData["ship0"]["Heading"]
+#     # ) # 主船
+#     # VM.addShip(ShipID = initData["ship1"]["ShipID"], Tick = initData["ship1"]["Tick"], Lon = initData["ship1"]["Lon"], Lat = initData["ship1"]["Lat"], Speed = initData["ship1"]["Speed"], Heading = initData["ship1"]["Heading"]) # 目标船，客船
 
-    VM.Run(initStatus4DrawLines, runTimes)
-    # VM.Run(runTimes)
-    # VMData = {"VMID": VM.id, "SimData": VM.GetSimData(), "NextStepData": VM.GetNextStepData(), "MET": VM.GetMetFlag()}
-    # print('\nVMData: ', VMData)
-    # return VMData
-    return VM
+#     VM.Run(initStatus4DrawLines, runTimes)
+#     # VM.Run(runTimes)
+#     # VMData = {"VMID": VM.id, "SimData": VM.GetSimData(), "NextStepData": VM.GetNextStepData(), "MET": VM.GetMetFlag()}
+#     # print('\nVMData: ', VMData)
+#     # return VMData
+#     return VM
 
 
 # 这个函数用于内部测试
@@ -671,6 +679,24 @@ def SimTest():
     # print('\nVMData: ', VMData)
     return VMData
 
+
+# 这个函数用于内部测试随机生成初始条件情况下的仿真
+def SimTestRandomInit():
+    GenVMID = time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
+    # print("VMID: ", GenVMID)
+    VM = SimVM(id = GenVMID, interval = 0.2, timeratio = 100)
+    n_ships = 2
+    pos, course, speed = CreateEncounterSituation.Create(n_ships)
+    # print(
+    #     pos, type(pos), type(pos[0]), '\n', 
+    #     course, type(course), '\n', 
+    #     speed, type(speed), '\n'
+    # )
+    for i in range(n_ships):
+        VM.addShip(ShipID='STRI'+'-{}'.format(i), Lon=pos[i][0], Lat=pos[i][1], Speed=speed[i], Heading=course[i])
+    VM.Run(8)
+    VMData = {"VMID": VM.id, "SimData": VM.GetSimData(), "NextStepData": VM.GetNextStepData(), "MET": VM.GetMetFlag()}
+    # print('\nVMData: ', VMData)
 
 from treelib import Tree
 import json
@@ -731,6 +757,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-

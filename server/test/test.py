@@ -259,8 +259,26 @@
 # atest.get_status()
 # atest.test_instruction()
 
-import math
-def calc_prob(DCPA):
-    p = math.exp(DCPA * 1.05 * (-1) / 1000)
-    return p     
-print(calc_prob(1500))
+# import math
+# def calc_prob(DCPA):
+#     p = math.exp(DCPA * 1.05 * (-1) / 1000)
+#     return p     
+# print(calc_prob(1500))
+import copy
+# a = [False, False, False, True]
+# b = [False, False, True, True]
+# print(b!=a)
+# if (True in a):
+#     print('a, true in a ', )
+
+class ship:
+    def __init__(self, id):
+        self.id = id
+        self.time = 0
+
+    def func(self, ):
+        self.time += 1
+ship1 = ship('10086')
+bar = copy.deepcopy(ship1)
+print(ship1.id)
+print(bar.id)

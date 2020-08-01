@@ -229,7 +229,16 @@ def ComputeDynamicDCPA(pos1, heading1, speed1, pos2, heading2, speed2, tc, speed
     # print("DCPA: ", DCPA)
     return DCPA
 
-    
+def JDCPA(my_ship, target_ship):
+    if target_ship.decision_status == False:
+        # tc是本船转向后走的时间， v1new是本船在转向阶段的速度 v1是本船原始速度
+        tc = my_ship.
+        D0 = ComputeDynamicDCPA([my_ship.lon, my_ship.lat], my_ship.heading, my_ship.speed, [target_ship.lon, target_ship.lat], target_ship.heading, target_ship.speed, tc, v1new)
+    else:
+        pass
+    pass
+
+
 # @test
 # mydcpa = ComputeDCPA([123, 35], 10, 9.8, [123.1, 35], 350, 10.2)
 # print('原始MyDCPA: ', mydcpa)
