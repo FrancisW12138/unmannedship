@@ -1,4 +1,5 @@
 import numpy as np
+import math
 # from numpy import cos, pi
 import TransBCD
 # 工具包 计算本船与目标船的DCPA和TCPA
@@ -73,7 +74,7 @@ def ComputeDCPA(pos1, heading1, speed1, pos2, heading2, speed2):
     deltapos[1] = TransBCD.DeltaLat2DeltaMeter(deltapos[1])
     # print("\ndeltapos: ", deltapos)
     DCPA = np.linalg.norm(deltapos)
-    print("DCPA: ", DCPA)
+    # print("DCPA: ", DCPA)
     return DCPA
 
 
@@ -229,14 +230,38 @@ def ComputeDynamicDCPA(pos1, heading1, speed1, pos2, heading2, speed2, tc, speed
     # print("DCPA: ", DCPA)
     return DCPA
 
-def JDCPA(my_ship, target_ship):
-    if target_ship.decision_status == False:
+def JDCPA(target_ship_decision_status, pos1, a1, v1, pos2, a2, v2, tc1, v1new, a1new, t2new, tc2, a2new, v2new):
+    def update_position(lon, lat, speed, heading, interval):
+        distance = speed * interval # 单位为米
+        x_com = distance * math.sin(math.radians(heading))
+        y_com = distance * math.cos(math.radians(heading))
+        xx = TransBCD.DeltaMeter2DeltaLon(x_com, lat)
+        yy = TransBCD.DeltaMeter2DeltaLat(y_com)
+        lon += xx
+        lat += yy
+        return lon, lat
+    
+    if target_ship_decision_status == False:
         # tc是本船转向后走的时间， v1new是本船在转向阶段的速度 v1是本船原始速度
-        tc = my_ship.
-        D0 = ComputeDynamicDCPA([my_ship.lon, my_ship.lat], my_ship.heading, my_ship.speed, [target_ship.lon, target_ship.lat], target_ship.heading, target_ship.speed, tc, v1new)
+        D0 = ComputeDynamicDCPA(pos1, a1, v1, pos2, a2, v2, tc1, v1new)
+        return D0
     else:
-        pass
-    pass
+        delta_t2 = tc2 - t2new
+        if tc1 > delta_t2:
+            # 对方先回正
+            D1 = ComputeDCPA(pos1, a1new, v1new, pos2, a2new, v2new)
+            pos2new = update_position(pos2[0], pos2[1], v2new, a2new, delta_t2)
+            D2 = ComputeDCPA(pos1, a1new, v1new, pos2new, a2, v2)
+            pos1new = update_position(pos1[0], pos1[1], v1new, a1new, tc1)
+            D3 = ComputeDCPA(pos1new, a1, v1, pos2new, a2, v2)
+        else:
+            # 本船先回正
+            D1 = ComputeDCPA(pos1, a1new, v1new, pos2, a2new, v2new)
+            pos1new = update_position(pos1[0], pos1[1], v1new, a1new, tc1)
+            D2 = ComputeDCPA(pos1new, a1, v1, pos2, a2new, v2new)
+            pos2new = update_position(pos2[0], pos2[1], v2new, a2new, delta_t2)
+            D3 = ComputeDCPA(pos1new, a1, v1, pos2new, a2, v2)
+        return min(D1, D2, D3)
 
 
 # @test
@@ -250,3 +275,11 @@ def JDCPA(my_ship, target_ship):
 # print('减速加转向DCPA: ', myddcpa30)
 # mytcpa = ComputeTCPA([123, 35.1], 90, 10, [123.1, 35], 270, 7)
 # print('MyTCPA: ', mytcpa)
+
+
+# x = TransBCD.DeltaLon2DeltaMeter(123.31-123.2102, 30.3813)
+# y =  TransBCD.DeltaLat2DeltaMeter(30.3813-30.1382)
+# d1 = math.sqrt(x**2 +y**2)     
+# dcpa = ComputeDCPA([123.2102, 30.1382], 168.4, 10, [123.31, 30.3813], 15.2, 10)
+# print('d1: ', d1)
+# print('DCPA: ', dcpa)

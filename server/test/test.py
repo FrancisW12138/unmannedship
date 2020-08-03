@@ -271,14 +271,28 @@ import copy
 # if (True in a):
 #     print('a, true in a ', )
 
-class ship:
-    def __init__(self, id):
-        self.id = id
-        self.time = 0
+# class ship:
+#     def __init__(self, id):
+#         self.id = id
+#         self.time = 0
 
-    def func(self, ):
-        self.time += 1
-ship1 = ship('10086')
-bar = copy.deepcopy(ship1)
-print(ship1.id)
-print(bar.id)
+#     def func(self, ):
+#         self.time += 1
+# ship1 = ship('10086')
+# bar = copy.deepcopy(ship1)
+# print(ship1.id)
+# print(bar.id)
+
+import math
+def get_decision_probability( DCPA):
+    return math.exp(DCPA * 1.05 * (-1) / 1852)
+
+print(get_decision_probability(0))
+print(get_decision_probability(50))
+print(get_decision_probability(100))
+print(get_decision_probability(200))
+print(get_decision_probability(400))
+print(get_decision_probability(800))
+print(get_decision_probability(1200))
+print(get_decision_probability(1800))
+

@@ -1,11 +1,11 @@
 // 百度地图API功能
 let map = new BMap.Map("map"); // 创建Map实例
-map.centerAndZoom(new BMap.Point(123.05, 31), 14); // 初始化地图,设置中心点坐标和地图级别
+map.centerAndZoom(new BMap.Point(123, 31.001), 13); // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 
 let ship1,ship2;
 
-init();
+// init();
 
 function init(){
     let shipIcon1 = new BMap.Icon("/static/res/ship/freighter_min.png", new BMap.Size(150, 25));

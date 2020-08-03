@@ -2,3 +2,4 @@ venv/
 client/static/LearningPixi/.idea/
 server/__pycache__/
 server/model/__pycache__/
+

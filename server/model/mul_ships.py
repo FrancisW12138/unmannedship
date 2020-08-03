@@ -33,7 +33,7 @@ VM 运行一步
     否则：
         如果领域内有船：
             对雷达范围内的每一个船：
-                DCPA: 算法1
+                DCPA: 
             p = exp{DCPA . *}
             如果 p>0.8:
                 做决策，多船决策算法->算法2
@@ -74,17 +74,19 @@ VM 运行一步
 2. 每艘船的决策内容[[],[], [], [***]]
 3. 每艘船的状态，位置 
 
+本船在新航线上走的总时间 记作tc1
+
 目标船已经在新航线上航行时间 记作 t2new
 目标船在新航线走的总时间 记作 tc2
-若目标船未决策 则 tnew2, tc2 = 0
+若目标船未决策 则 t2new, tc2 = 0
 目标船决策的内容 新的速度 v2new, 新的角度 a2new
 
 
 算法1 JDCPA
-输入：pos1, a1, v1, pos2, a2, v2, tc1, v1new, a1new, t2new, tc2, a2new， v2new
+输入：pos1, a1, v1, pos2, a2, v2, tc1, v1new, a1new, t2new, tc2, a2new, v2new
 如果目标船未决策：
-    D0 = DynamicDCPA(pos1, a1, v1, pos2, a2, v2, tc, v1new)
-    D0 = DynamicDCPA(pos1, a1_temp, v1, pos2, a2, v2, tc, v1new)
+    D0 = DynamicDCPA(pos1, a1, v1, pos2, a2, v2, tc1, v1new)
+    D0 = DynamicDCPA(pos1, a1_temp, v1, pos2, a2, v2, tc1, v1new)
 否则：
     tc1 > (tc2-t2new)?:
         # 对方先回正

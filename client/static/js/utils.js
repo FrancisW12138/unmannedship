@@ -48,7 +48,7 @@ $("#getSimTree").click(function(event) {
 
 // 动画功能
 function animation(SimData) {
-	let timeOut = 400;
+	let timeOut = 40;
 	let pointSize = 100;
 	let shipVOImg = new Array(); // 用于保存主船的VOImdID
 
@@ -84,13 +84,13 @@ function animation(SimData) {
 				for(let ship = 0;ship< shipNum;ship++) {
 					(function(ship,pointList,timeOut,i,rotation){
 					setTimeout(()=>{
-						moveShip(ship,pointList[i + 1],rotation);
+						// moveShip(ship,pointList[i + 1],rotation);
 						my_add_polyline([pointList[i], pointList[i + 1]]);
 					},timeOut);
 				})(ship,shipPointList[ship],timeOut,i,rotationList[ship])
 				}
 			}
-			updateVoImg(shipVOImg[moment]);
+			// updateVoImg(shipVOImg[moment]);
 	}
 	}
 }

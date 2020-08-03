@@ -73,7 +73,7 @@ body{
 #tree{
 	position: absolute;
 	width: 80%;
-	height: 45%;
+	height: 25%;
 	top: 0;
 	right: 0;
 	background-color: #d7ffcb;
@@ -82,8 +82,8 @@ body{
 #map{
 	position: absolute;
 	width: 80%;
-	height: 55%;
-	top: 45%;
+	height: 75%;
+	top: 25%;
 	right: 0;
 	/* background-color: #028EE1; */
 }
