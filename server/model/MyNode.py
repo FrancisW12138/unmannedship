@@ -131,6 +131,12 @@ class SimVM:
         self.SimData = []
         self.NextStepData = {}
         self.DeciResult = {}
+        self.count = 0
+        # self.decision = {
+        #     'deci_status': [],
+        #     'result': [],
+        #     'ship_status': []
+        # }
         # self.SysClock = SysClock
 
     def addShip(self, ShipID, VM, Tick = 0, Lon = 0.0, Lat = 0.0, Speed = 0.0, Heading = 0.0):
@@ -164,6 +170,7 @@ class SimVM:
         
         dt = 10
         ins = []
+        print('ship id: ', ship.id)
         print('a_ship_decision, 标记:', ship.decision_content)
         GW2_tc_max =  ship.decision_content[2]
         for t in range(int(GW2_tc_max/dt)):
@@ -207,12 +214,14 @@ class SimVM:
         # 继续 此处data2已经重新填好数据
         return data1, data2
 
+    # def gen_branch_data(self, decision):
     def gen_branch_data(self, decision):
         # decision = {
         #     'deci_status': [{'id': ship.id, 'status': False}, {}, {}, {}],
         #     'result': [{'id': ship.id, 'result': []}, {}, {}, {}]
         #     'ship_status': [{}, {}, {}, {}]
         # }
+        # decision = self.remove_duplicated_decision(decision)
         def GenVMID():
             return time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
         VM1 = copy.deepcopy(self)
@@ -237,6 +246,7 @@ class SimVM:
                             ship.full_decision_length = len(temp_ins)
 
                             # 在此改变速度和方向 上面的解析指令中不解析速度和方向
+                            print('ship id:{},标记：'.format(ship.id), decision )
                             ship.speed = ship.original_speed - res['result'][0] 
                             ship.heading = ship.original_heading + res['result'][1]
 
@@ -246,12 +256,13 @@ class SimVM:
                     break
         return VM1, VM2
 
-    def remove_duplicated_decision(self, decision):
+    def pre_remove_duplicated_decision(self, decision):
         # decision = {
         #     'deci_status': [{'id': ship.id, 'status': False}, {}, {}, {}],
         #     'result': [{'id': ship.id, 'result': []}, {}, {}, {}]
         #     'ship_status': [{}, {}, {}, {}]
         # }
+        print('remove remove_duplicated_decision,decision: ', decision)
         if len(decision['result']) > 4:
             deci_status = decision['deci_status']  
             result = decision['result']
@@ -284,11 +295,42 @@ class SimVM:
                 bar.append(d0)
             else:
                 bar.append(d1)
+                # if len(d1['result']) == 0:
+                #     for item in foo:
+                #         if item['id'] == deplicated_id:
+                #             item['status'] = False
             decision['deci_status'] = foo
             decision['result'] = bar
         else:
             pass
         return decision
+
+    def new_remove_duplicated_decision(self, temp_deci_status, temp_result):
+        # temp_deci_status = [{'id': ship.id, 'status': True}, {'id': ship.id, 'status': False}, {'id': ship.id, 'status': True},...]
+        # temp_result = [{'id': ship.id, 'result': [0, 40, 50]}, {'id': ship.id, 'result': []}, {'id': ship.id, 'result': [10, 50, 40]}, ...]
+        # 注：这些id一定是相同的 是当前船的id
+        print('new标记：temp_d, remp_r:', temp_deci_status, temp_result)
+        if len(temp_deci_status) == 0 or len(temp_result) == 0:
+            return False, []
+        else:
+            bar = False
+            id = temp_deci_status[0]['id']
+            for temp_d in temp_deci_status:
+                if temp_d['status'] == True:
+                    bar = True
+                    break
+            res = [[], [], []]
+            for temp_r in temp_result:
+                if len(temp_r['result']) > 0:
+                    res[0].append(temp_r['result'][0])
+                    res[1].append(temp_r['result'][1])
+                    res[2].append(temp_r['result'][2])
+            if len(res[0]) > 0: #有东西
+                max_res = [max(res[0]), max(res[1]), max(res[2])]
+            else:
+                max_res = []
+            # return {'id': id, 'status': bar}, {'id':id, 'result': max_res}
+            return bar, max_res
 
 
     def Run(self, Times = 32):
@@ -306,13 +348,14 @@ class SimVM:
             print('进入多步运行', self.Times)
             self.Times -= 1
             will_brance, decision = self.RunOneTime() # 更新之后的
-            decision = self.remove_duplicated_decision(decision)
+            # decision = self.remove_duplicated_decision(decision)
             if will_brance:
                 # self.Time = 0    
                 break       
         # 结束之后
         if will_brance:
             [VM1, VM2] = self.gen_branch_data(decision)
+            # [VM1, VM2] = self.gen_branch_data()
             return True, self.SimData, [VM1, VM2]
         else:
             return False, self.SimData, []
@@ -344,6 +387,11 @@ class SimVM:
             'ship_status': []
         }
         original_decision_status = []
+        # self.decision = {
+        #     'deci_status': [],
+        #     'result': [],
+        #     'ship_status': []
+        # } # 每次运行 先清理一下
         will_branch = False
         self.judge_collision()
         for ship in self.SimShipRegistered:
@@ -364,34 +412,45 @@ class SimVM:
                     ship.execute_instruction()
                     ship_in_range = ship.detect_ship_in_radar_range()
                     if len(ship_in_range) > 0:
+                        temp_deci_status = []
+                        temp_result = []
                         for target_ship in ship_in_range:
                             DCPA = CPA.ComputeDCPA([ship.lon, ship.lat], ship.heading, ship.speed, [target_ship.lon, target_ship.lat], target_ship.heading, target_ship.speed)
                             distance = self.calc_distance(ship, target_ship)
                             if abs(DCPA - distance) < 50:
-                                #  相遇
+                                #  相遇TODO
                                 pass
                             else:
                                 p = ship.get_decision_probability(DCPA)
                                 print('current time {}, my_ship {}, target_ship {}, DCPA {}, p {:.6f}:'.format(ship.tick, ship.id, target_ship.id, DCPA, p))
                                 if p > 0.8:
                                     has_ship, GW1_vc_max, GW2_ac_max, GW2_tc_max = HA.AHLD(ship, ship_in_range) # 算法2
+                                    dr = [GW1_vc_max, GW2_ac_max, GW2_tc_max]
                                     if has_ship:
-                                        dr = [GW1_vc_max, GW2_ac_max, GW2_tc_max]
-                                        ship.decision_status = True # TODO 这里注意了
-                                        ship.decision_content = dr
-                                        # print(ship.decision_content)
-                                        # deci_result looks like: GW1_vc_max, GW2_ac_max, GW2_tc_max
-                                        decision['deci_status'].append({'id': ship.id, 'status': True})
-                                        decision['result'].append({'id': ship.id, 'result': dr})
-                                        # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
+                                        temp_deci_status.append({'id': ship.id, 'status': True})
+                                        temp_result.append({'id': ship.id, 'result': dr})
+                                        # dr = [GW1_vc_max, GW2_ac_max, GW2_tc_max]
+                                        # ship.decision_status = True # TODO 这里注意了
+                                        # ship.decision_content = dr
+                                        # self.decision['deci_status'].append({'id': ship.id, 'status': True})
+                                        # self.decision['result'].append({'id': ship.id, 'result': dr})
                                     else:
-                                        decision['deci_status'].append({'id': ship.id, 'status': False})
-                                        decision['result'].append({'id': ship.id, 'result': []})
-                                        # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
+                                        temp_deci_status.append({'id': ship.id, 'status': False})
+                                        temp_result.append({'id': ship.id, 'result': []})
+                                        # self.decision['deci_status'].append({'id': ship.id, 'status': False})
+                                        # self.decision['result'].append({'id': ship.id, 'result': []})
                                 else:
-                                    decision['deci_status'].append({'id': ship.id, 'status': False})
-                                    decision['result'].append({'id': ship.id, 'result': []})
-                                    # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
+                                    temp_deci_status.append({'id': ship.id, 'status': False})
+                                    temp_result.append({'id': ship.id, 'result': []})
+                                    # self.decision['deci_status'].append({'id': ship.id, 'status': False})
+                                    # self.decision['result'].append({'id': ship.id, 'result': []})
+                        # TODO:
+                        s, r = self.new_remove_duplicated_decision(temp_deci_status, temp_result)
+                        decision['deci_status'].append({'id': ship.id, 'status': s})
+                        decision['result'].append({'id': ship.id, 'result': r})
+                        if s: # s为True 或者False
+                            ship.decision_status = True
+                            ship.decision_content = r
                     else:
                         # 领域内没有船
                         decision['deci_status'].append({'id': ship.id, 'status': False})
@@ -407,17 +466,18 @@ class SimVM:
         self.SimData.append(self.get_all_ship_status())
         print('Run one time, will_branch: ', will_branch)
         return will_branch, decision
+        # return will_branch
 
 
-def test():
-    GenVMID = time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
-    VM = SimVM(GenVMID, timeratio=10)
-    VM.addShip(ShipID='1', VM=VM, Tick=0, Lon=123, Lat=30.916667, Speed=18, Heading=0)
-    VM.addShip(ShipID='2', VM=VM, Tick=0, Lon=123.074551, Lat=31.0535, Speed=18, Heading=230)
-    VM.addShip(ShipID='3', VM=VM, Tick=0, Lon=123.074940, Lat=30.963, Speed=16, Heading=300)
-    VM.addShip(ShipID='4', VM=VM, Tick=0, Lon=122.950364, Lat=31.0425, Speed=13, Heading=135)
-    will_branch, my_self, gotten_VM = VM.Run(32)
-    return will_branch, my_self, gotten_VM, VM.SimShipRegistered[0].tick
+# def test():
+#     GenVMID = time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
+#     VM = SimVM(GenVMID, timeratio=10)
+#     VM.addShip(ShipID='1', VM=VM, Tick=0, Lon=123, Lat=30.916667, Speed=18, Heading=0)
+#     VM.addShip(ShipID='2', VM=VM, Tick=0, Lon=123.074551, Lat=31.0535, Speed=18, Heading=230)
+#     VM.addShip(ShipID='3', VM=VM, Tick=0, Lon=123.074940, Lat=30.963, Speed=16, Heading=300)
+#     VM.addShip(ShipID='4', VM=VM, Tick=0, Lon=122.950364, Lat=31.0425, Speed=13, Heading=135)
+#     will_branch, my_self, gotten_VM = VM.Run(32)
+#     return will_branch, my_self, gotten_VM, VM.SimShipRegistered[0].tick
 
 # def main():
 #     will_branch, VM, gotten_VM, tick = test()
