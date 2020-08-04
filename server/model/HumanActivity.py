@@ -232,7 +232,7 @@ def conv(ship1, ship2, theta):
     x_0 = x*np.cos(theta * np.pi / 180)-y*np.sin(theta * np.pi / 180)
     y_0 = x*np.sin(theta * np.pi / 180)+y*np.cos(theta * np.pi / 180)
     # 如果y_0>0, 对方船在1 4象限 我是让路船
-    return y_0
+    return x_0
 
 def calc_delta_angle(alpha1, alpha2):
     delta = abs(alpha1 - alpha2)
@@ -334,6 +334,7 @@ def AHLD(my_ship, target_ship):
     for ship in target_ship:
         # delta_lon = my_ship.lon - ship.lon
         delta_lon = conv(my_ship, ship, my_ship.heading)
+        # if delta_lon < 0: # 本船是让路船 目标船是直航船
         if delta_lon > 0: # 本船是让路船 目标船是直航船
             stand_on_ship.append(ship)
 

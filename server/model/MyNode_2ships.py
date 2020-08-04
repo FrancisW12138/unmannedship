@@ -131,6 +131,7 @@ class SimVM:
         self.SimData = []
         self.NextStepData = {}
         self.DeciResult = {}
+        self.count = 0
         # self.SysClock = SysClock
 
     def addShip(self, ShipID, VM, Tick = 0, Lon = 0.0, Lat = 0.0, Speed = 0.0, Heading = 0.0):
@@ -226,7 +227,7 @@ class SimVM:
             break_flag = False
             for ds in decision['deci_status']:
                 if ds['id'] == ship.id and ds['status'] == True: # 找到‘我’,且我做了新决策
-                    # ship.decision_status = True # TODO 这里注意了
+                    ship.decision_status = True # TODO 这里注意了
                     # 去找‘我’的决策内容
                     for res in decision['result']:
                         if res['id'] == ship.id:
@@ -290,7 +291,6 @@ class SimVM:
             pass
         return decision
 
-
     def Run(self, Times = 32):
         will_brance = False
         decision = {
@@ -338,6 +338,7 @@ class SimVM:
 
     def RunOneTime(self, ):
         # 注：decision是本轮决策结果
+        self.count += 1
         decision = {
             'deci_status': [],
             'result': [],
@@ -361,42 +362,45 @@ class SimVM:
                     # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
                 else:
                     # ship尚未做出决策
-                    ship.execute_instruction()
-                    ship_in_range = ship.detect_ship_in_radar_range()
-                    if len(ship_in_range) > 0:
-                        for target_ship in ship_in_range:
-                            DCPA = CPA.ComputeDCPA([ship.lon, ship.lat], ship.heading, ship.speed, [target_ship.lon, target_ship.lat], target_ship.heading, target_ship.speed)
-                            distance = self.calc_distance(ship, target_ship)
-                            if abs(DCPA - distance) < 50:
-                                #  相遇
-                                pass
-                            else:
-                                p = ship.get_decision_probability(DCPA)
-                                print('current time {}, my_ship {}, target_ship {}, DCPA {}, p {:.6f}:'.format(ship.tick, ship.id, target_ship.id, DCPA, p))
-                                if p > 0.8:
-                                    has_ship, GW1_vc_max, GW2_ac_max, GW2_tc_max = HA.AHLD(ship, ship_in_range) # 算法2
-                                    if has_ship:
-                                        dr = [GW1_vc_max, GW2_ac_max, GW2_tc_max]
-                                        ship.decision_status = True # TODO 这里注意了
-                                        ship.decision_content = dr
-                                        # print(ship.decision_content)
-                                        # deci_result looks like: GW1_vc_max, GW2_ac_max, GW2_tc_max
-                                        decision['deci_status'].append({'id': ship.id, 'status': True})
-                                        decision['result'].append({'id': ship.id, 'result': dr})
-                                        # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
+                    if self.count % 4 == 0:
+                        ship.execute_instruction()
+                        ship_in_range = ship.detect_ship_in_radar_range()
+                        if len(ship_in_range) > 0:
+                            for target_ship in ship_in_range:
+                                DCPA = CPA.ComputeDCPA([ship.lon, ship.lat], ship.heading, ship.speed, [target_ship.lon, target_ship.lat], target_ship.heading, target_ship.speed)
+                                distance = self.calc_distance(ship, target_ship)
+                                if abs(DCPA - distance) < 50:
+                                    #  相遇
+                                    pass
+                                else:
+                                    p = ship.get_decision_probability(DCPA)
+                                    print('current time {}, my_ship {}, target_ship {}, DCPA {}, p {:.6f}:'.format(ship.tick, ship.id, target_ship.id, DCPA, p))
+                                    if p > 0.8:
+                                        has_ship, GW1_vc_max, GW2_ac_max, GW2_tc_max = HA.AHLD(ship, ship_in_range) # 算法2
+                                        if has_ship:
+                                            dr = [GW1_vc_max, GW2_ac_max, GW2_tc_max]
+                                            # ship.decision_status = True # TODO 这里注意了
+                                            ship.decision_content = dr
+                                            # print(ship.decision_content)
+                                            # deci_result looks like: GW1_vc_max, GW2_ac_max, GW2_tc_max
+                                            decision['deci_status'].append({'id': ship.id, 'status': True})
+                                            decision['result'].append({'id': ship.id, 'result': dr})
+                                            # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
+                                        else:
+                                            decision['deci_status'].append({'id': ship.id, 'status': False})
+                                            decision['result'].append({'id': ship.id, 'result': []})
+                                            # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
                                     else:
                                         decision['deci_status'].append({'id': ship.id, 'status': False})
                                         decision['result'].append({'id': ship.id, 'result': []})
                                         # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
-                                else:
-                                    decision['deci_status'].append({'id': ship.id, 'status': False})
-                                    decision['result'].append({'id': ship.id, 'result': []})
-                                    # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
+                        else:
+                            # 领域内没有船
+                            decision['deci_status'].append({'id': ship.id, 'status': False})
+                            decision['result'].append({'id': ship.id, 'result': []})
+                            # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
                     else:
-                        # 领域内没有船
-                        decision['deci_status'].append({'id': ship.id, 'status': False})
-                        decision['result'].append({'id': ship.id, 'result': []})
-                        # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
+                        ship.go_ahead()
             else:
                 pass    
         for elem in decision['deci_status']:

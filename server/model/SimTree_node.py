@@ -14,7 +14,7 @@ sys.path.append(".")
 sys.path.append("..")
 from treelib import Node, Tree
 import pickle, json, copy, time, random
-import MyNode
+import MyNode, MyNode_2ships
 import opt_db
 
 
@@ -74,12 +74,12 @@ def SimTree():
     tree = Tree()
     VMpool = []
     GenVMID = time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
-    VM = MyNode.SimVM(GenVMID, timeratio=10)
+    # VM = MyNode.SimVM(GenVMID, timeratio=10)
+    VM = MyNode_2ships.SimVM(GenVMID, timeratio=10)
     VM.addShip(ShipID='1', VM=VM, Tick=0, Lon=123, Lat=30.916667, Speed=18, Heading=0)
     VM.addShip(ShipID='2', VM=VM, Tick=0, Lon=123.074551, Lat=31.0535, Speed=18, Heading=230)
     VM.addShip(ShipID='3', VM=VM, Tick=0, Lon=123.074940, Lat=30.963, Speed=16, Heading=300)
     VM.addShip(ShipID='4', VM=VM, Tick=0, Lon=122.950364, Lat=31.0425, Speed=13, Heading=135)
-    # VM.addShip(ShipID='5', VM=VM, Tick=0, Lon=122.950264, Lat=31.0225, Speed=13, Heading=90)
     parent = None
 
     def CreatVMTree(tree, vm, parent):
