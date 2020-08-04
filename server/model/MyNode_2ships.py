@@ -362,6 +362,7 @@ class SimVM:
                     # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
                 else:
                     # ship尚未做出决策
+                    # % 4 的意思是4个步长决策一次
                     if self.count % 4 == 0:
                         ship.execute_instruction()
                         ship_in_range = ship.detect_ship_in_radar_range()
