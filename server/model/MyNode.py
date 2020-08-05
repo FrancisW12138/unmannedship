@@ -29,8 +29,7 @@ class SimShip:
         self.full_decision_length = 0
         self.applied_decision_lenth = 0
         self.collision = False
-        # self.mtc = 0
-        # self.instructions_status
+        self.ship_prob = 1
 
     def turn_left(self):
         self.heading -= 5
@@ -113,6 +112,7 @@ class SimShip:
         shipStatus['instructions_queue'] = self.instructions_queue
         shipStatus['full_decision_length'] = self.full_decision_length
         shipStatus['applied_decision_lenth'] = self.applied_decision_lenth
+        shipStatus['ship_prob'] = self.ship_prob
         return shipStatus
 
 
@@ -132,12 +132,7 @@ class SimVM:
         self.NextStepData = {}
         self.DeciResult = {}
         self.count = 0
-        # self.decision = {
-        #     'deci_status': [],
-        #     'result': [],
-        #     'ship_status': []
-        # }
-        # self.SysClock = SysClock
+        self.VM_prob = 1 # 虚拟机分支的概率
 
     def addShip(self, ShipID, VM, Tick = 0, Lon = 0.0, Lat = 0.0, Speed = 0.0, Heading = 0.0):
         ship = SimShip(self.id, ShipID, self, Tick, Lon, Lat, Speed, Heading, self.timeratio)
@@ -161,7 +156,6 @@ class SimVM:
         self.GoHead = False
         pass
 
-    # def parse_decition(self, ship, decision,a_ship_decision):
     def parse_decition(self, ship):
         # decision looks like: [GW1_vc_max, GW2_ac_max, GW2_tc_max]
         # 注意 只有让路船会决策 故不存在左转的情况
@@ -214,14 +208,13 @@ class SimVM:
         # 继续 此处data2已经重新填好数据
         return data1, data2
 
-    # def gen_branch_data(self, decision):
     def gen_branch_data(self, decision):
         # decision = {
         #     'deci_status': [{'id': ship.id, 'status': False}, {}, {}, {}],
         #     'result': [{'id': ship.id, 'result': []}, {}, {}, {}]
         #     'ship_status': [{}, {}, {}, {}]
         # }
-        # decision = self.remove_duplicated_decision(decision)
+
         def GenVMID():
             return time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
         VM1 = copy.deepcopy(self)
@@ -230,12 +223,14 @@ class SimVM:
         VM2.id = GenVMID()
         VM1.SimData = []
         VM2.SimData = []
+        p = 1
         for ship in VM2.SimShipRegistered:
+            p = p * ship.ship_prob
             temp_ins = []
             break_flag = False
             for ds in decision['deci_status']:
                 if ds['id'] == ship.id and ds['status'] == True: # 找到‘我’,且我做了新决策
-                    # ship.decision_status = True # TODO 这里注意了
+                    # ship.decision_status = True # TODO 这里注意了 多船的版本建议不要激活这一行
                     # 去找‘我’的决策内容
                     for res in decision['result']:
                         if res['id'] == ship.id:
@@ -254,6 +249,8 @@ class SimVM:
                             break
                 if break_flag:
                     break
+        VM2.VM_prob = p * self.VM_prob
+        VM1.VM_prob = (1-p) * self.VM_prob
         return VM1, VM2
 
     def pre_remove_duplicated_decision(self, decision):
@@ -331,7 +328,6 @@ class SimVM:
                 max_res = []
             # return {'id': id, 'status': bar}, {'id':id, 'result': max_res}
             return bar, max_res
-
 
     def Run(self, Times = 32):
         will_brance = False
@@ -414,6 +410,7 @@ class SimVM:
                     if len(ship_in_range) > 0:
                         temp_deci_status = []
                         temp_result = []
+                        temp_ship_prob = [] # 记录船决策概率
                         for target_ship in ship_in_range:
                             DCPA = CPA.ComputeDCPA([ship.lon, ship.lat], ship.heading, ship.speed, [target_ship.lon, target_ship.lat], target_ship.heading, target_ship.speed)
                             distance = self.calc_distance(ship, target_ship)
@@ -422,6 +419,7 @@ class SimVM:
                                 pass
                             else:
                                 p = ship.get_decision_probability(DCPA)
+                                temp_ship_prob.append(p)
                                 print('current time {}, my_ship {}, target_ship {}, DCPA {}, p {:.6f}:'.format(ship.tick, ship.id, target_ship.id, DCPA, p))
                                 if p > 0.8:
                                     has_ship, GW1_vc_max, GW2_ac_max, GW2_tc_max = HA.AHLD(ship, ship_in_range) # 算法2
@@ -451,12 +449,18 @@ class SimVM:
                         if s: # s为True 或者False
                             ship.decision_status = True
                             ship.decision_content = r
+                        if len(temp_ship_prob) > 0:
+                            ship.ship_prob = max(temp_ship_prob)
+                        # 否则是相遇了 默认ship_prob就是1，不用处理
                     else:
                         # 领域内没有船
                         decision['deci_status'].append({'id': ship.id, 'status': False})
                         decision['result'].append({'id': ship.id, 'result': []})
                         # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
+                        # 船舶不参与分支概率计算
             else:
+                # 船的状态表明已相遇
+                ship.ship_prob = 1
                 pass    
         for elem in decision['deci_status']:
             if elem['status'] == True:

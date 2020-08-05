@@ -75,19 +75,19 @@ def SimTree():
     VMpool = []
     GenVMID = time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
     # 在多船避碰中，如果要加步长控制，用VM = MyNode_2ships.SimVM(GenVMID, timeratio=10)
-    VM = MyNode.SimVM(GenVMID, timeratio=10)   #没加步长控制的树
-    # VM = MyNode_2ships.SimVM(GenVMID, timeratio=10)    #加上步长控制的树，需要几艘船，就留几艘
+    # VM = MyNode.SimVM(GenVMID, timeratio=10)   #没加步长控制的树
+    VM = MyNode_2ships.SimVM(GenVMID, timeratio=10)    #加上步长控制的树，需要几艘船，就留几艘
     VM.addShip(ShipID='1', VM=VM, Tick=0, Lon=123, Lat=30.916667, Speed=18, Heading=0)
     VM.addShip(ShipID='2', VM=VM, Tick=0, Lon=123.074551, Lat=31.0535, Speed=18, Heading=230)
-    VM.addShip(ShipID='3', VM=VM, Tick=0, Lon=123.074940, Lat=30.963, Speed=16, Heading=300)
-    VM.addShip(ShipID='4', VM=VM, Tick=0, Lon=122.950364, Lat=31.0425, Speed=13, Heading=135)
+    # VM.addShip(ShipID='3', VM=VM, Tick=0, Lon=123.074940, Lat=30.963, Speed=16, Heading=300)
+    # VM.addShip(ShipID='4', VM=VM, Tick=0, Lon=122.950364, Lat=31.0425, Speed=13, Heading=135)
     parent = None
 
     def CreatVMTree(tree, vm, parent):
         will_branch, simdata, gotten_VM = vm.Run(32)
 
         # Data = {"VMID": my_self.id, "SimData": VM.GetSimData(), "NextStepData":gotten_VM}
-        Data = {"VMID": vm.id, "SimData": simdata}
+        Data = {"VMID": vm.id, "VM_prob": vm.VM_prob, "SimData": simdata}
         tree.create_node(identifier=Data["VMID"], parent=parent)
         VMpool.append(Data)
 
