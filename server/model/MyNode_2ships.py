@@ -416,9 +416,14 @@ class SimVM:
                         if len(ship_in_range) > 0:
                             temp_deci_status = []
                             temp_result = []
-                            temp_ship_prob = []
+                            temp_ship_prob = [] # 记录船的决策
+                            temp_ship_DCPA = [] # 记录船DCPA
+                            temp_ship_TCPA = [] # 记录船TCPA
                             for target_ship in ship_in_range:
                                 DCPA = CPA.ComputeDCPA([ship.lon, ship.lat], ship.heading, ship.speed, [target_ship.lon, target_ship.lat], target_ship.heading, target_ship.speed)
+                                TCPA = CPA.ComputeTCPA([ship.lon, ship.lat], ship.heading, ship.speed, [target_ship.lon, target_ship.lat], target_ship.heading, target_ship.speed)
+                                temp_ship_DCPA.append(DCPA)
+                                temp_ship_TCPA.append(TCPA)
                                 distance = self.calc_distance(ship, target_ship)
                                 if abs(DCPA - distance) < 50:
                                     #  相遇TODO
@@ -459,6 +464,10 @@ class SimVM:
                             if len(temp_ship_prob) > 0:
                                 ship.ship_prob = max(temp_ship_prob)
                             # 否则是相遇了 默认ship_prob就是1，不用处理
+                            if len(temp_ship_DCPA) > 0:
+                                ship.DCPA = max(temp_ship_DCPA)
+                            if len(temp_ship_TCPA) > 0:
+                                ship.TCPA = max(temp_ship_TCPA)                              
                         else:
                             # 领域内没有船
                             decision['deci_status'].append({'id': ship.id, 'status': False})

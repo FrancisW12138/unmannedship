@@ -125,7 +125,7 @@ def ComputeTCPA(pos1, heading1, speed1, pos2, heading2, speed2):
         TCPA = -d / (x**2+y**2)**0.5
     else:
         TCPA = d / (x**2+y**2)**0.5
-    print("TCPA: ", TCPA)
+    # print("TCPA: ", TCPA)
     return TCPA
 
 

@@ -283,16 +283,19 @@ import copy
 # print(ship1.id)
 # print(bar.id)
 
-import math
-def get_decision_probability( DCPA):
-    return math.exp(DCPA * 1.05 * (-1) / 1852)
+# import math
+# def get_decision_probability( DCPA):
+#     return math.exp(DCPA * 1.05 * (-1) / 1852)
 
-print(get_decision_probability(0))
-print(get_decision_probability(50))
-print(get_decision_probability(100))
-print(get_decision_probability(200))
-print(get_decision_probability(400))
-print(get_decision_probability(800))
-print(get_decision_probability(1200))
-print(get_decision_probability(1800))
+# print(get_decision_probability(0))
+# print(get_decision_probability(50))
+# print(get_decision_probability(100))
+# print(get_decision_probability(200))
+# print(get_decision_probability(400))
+# print(get_decision_probability(800))
+# print(get_decision_probability(1200))
+# print(get_decision_probability(1800))
 
+data = '10, \"DCPA\": 9999, \"TCPA\": 9999, \"original_speed\": 18, \"original_heading\": 230, \"radar_range\": 0.07, \"decision_status\": false, \"decision_content\": [], \"instructions_queue\": [], \"full_decision_length\": 0, \"applied_decision_lenth\": 0, \"ship_prob\": 0.9992899748398327}]]}"}]}'
+data = data.replace(" \\", " ")
+print(data)
