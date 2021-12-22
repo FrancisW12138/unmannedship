@@ -48,7 +48,7 @@ $("#getSimTree").click(function(event) {
 
 // 动画功能
 function animation(SimData) {
-	let timeOut = 40;
+	let timeOut = 10;
 	let pointSize = 100;
 	let shipVOImg = new Array(); // 用于保存主船的VOImdID
 

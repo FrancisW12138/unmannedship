@@ -209,7 +209,6 @@ class SimVM:
         # 继续 此处data2已经重新填好数据
         return data1, data2
 
-    # def gen_branch_data(self, decision):
     def gen_branch_data(self, decision):
         # decision = {
         #     'deci_status': [{'id': ship.id, 'status': False}, {}, {}, {}],

@@ -231,7 +231,7 @@ def ComputeDCPA(x_own, y_own, speed_own, course_own, x_target, y_target, speed, 
 SPEED_MIN = 5  #the minimum value of ship velocity 
 SPEED_MAX = 10 #the maximum value of ship velocity
 DCPA_THRE = 500 #the threshold of DCPA, m
-D_MIN = 5*1852  #the minimum distance between ships in the initial encounter situations
+D_MIN = 0.5*1852  #the minimum distance between ships in the initial encounter situations
 
 def coord_conv(x, y, theta):
     # 国际海上避碰规则 COLREGs
@@ -266,7 +266,7 @@ def Create(n_ships):
     pos = [] #The array that stores the positions of the encounter ships
     course = []#The array that stores the courses of the encounter ships
     speed = []#The array that stores the speeds of the encounter ships
-     
+    
     for i in range(n_ships):
         pos_temp = GenEncounterPoint()
         course_temp = np.array(random.uniform(0,360))
@@ -276,7 +276,7 @@ def Create(n_ships):
         speed.append(speed_temp)
     # print('maxspeed: ', max(speed)*2)
     t = D_MIN / (max(speed)*2)
-    D_temp = random.uniform(5,6)*1852#The minimum distance between the shipss in the initial stage
+    D_temp = random.uniform(5,6)*1852 #The minimum distance between the shipss in the initial stage
     D_min = 0
     while D_min < D_temp:
         t += 10
@@ -285,17 +285,35 @@ def Create(n_ships):
                               pos[i][1] - t * speed[i] * np.cos(course[i] * np.pi/180)])
         D_min = CalMinDistance(pos)
 
-    pos = [pos[0].tolist(), pos[1].tolist()]
-    course = [course[0].tolist(), course[1].tolist()]
-    speed = [speed[0].tolist(), speed[1].tolist()]
-    # print(
-    #     pos, type(pos), type(pos[0]), '\n', 
-    #     course, type(course), '\n', 
-    #     speed, type(speed), '\n'
-    # )
+    pos = [item.tolist() for item in pos]
+    course = [item.tolist() for item in course]
+    speed = [item.tolist() for item in speed]
     return pos, course, speed
 
-# Create(2)
+# print(Create(2))
+import TransBCD as BCD
+ship_num = 4
+position, course, speed = Create(ship_num)
+
+base_position = [123, 31]
+target = {
+    "position": [],
+    "course": [],
+    "speed": []
+}
+for pos in position: 
+    delta_lon = BCD.DeltaMeter2DeltaLon(pos[0], base_position[1])
+    delta_lat = BCD.DeltaMeter2DeltaLat(pos[1])
+    target["position"].append([base_position[0] + delta_lon, base_position[1] + delta_lat])
+target["course"] = course
+target["speed"] = speed
+print(target)
+
+for i in range(ship_num):
+    print("VM.addShip(ShipID='{}', VM=VM, Tick=0, Lon={}, Lat={}, Speed={}, Heading={})"\
+        .format(i+5, target["position"][i][0], target["position"][i][1], target["speed"][i], target["course"][i]))
+
+
 '''
 def plot_situation(pos, course, speed):
     fig = plt.figure()
