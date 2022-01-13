@@ -10,12 +10,11 @@
 #-------------------------------------------------------------------------------
 
 import sys
-sys.path.append(".")
 sys.path.append("..")
 from treelib import Node, Tree
 import pickle, json, copy, time, random
-import MyNode, MyNode_2ships
-import opt_db
+import MyNode_new
+from unmannedshipv1.server import opt_db
 
 
 def store(data, filename):
@@ -74,9 +73,9 @@ def SimTree():
     tree = Tree()
     VMpool = []
     GenVMID = time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
-    # 在多船避碰中，如果要加步长控制，用VM = MyNode_2ships.SimVM(GenVMID, timeratio=10)
+    # 在多船避碰中，如果要加步长控制，用VM = MyNode_new.SimVM(GenVMID, timeratio=10)
     # VM = MyNode.SimVM(GenVMID, timeratio=10)   #没加步长控制的树
-    VM = MyNode_2ships.SimVM(GenVMID, timeratio=30)    #加上步长控制的树，需要几艘船，就留几艘
+    VM = MyNode_new.SimVM(GenVMID, timeratio=30)    #加上步长控制的树，需要几艘船，就留几艘
     # VM.addShip(ShipID='1', VM=VM, Tick=0, Lon=123, Lat=30.916667, Speed=18, Heading=0)
     # VM.addShip(ShipID='2', VM=VM, Tick=0, Lon=123.074551, Lat=31.0535, Speed=18, Heading=230)
     # VM.addShip(ShipID='3', VM=VM, Tick=0, Lon=123.074940, Lat=30.963, Speed=16, Heading=300)
@@ -105,15 +104,7 @@ def SimTree():
     tree = CreatVMTree(tree, VM, parent)
     return tree, SimTreeID, VMpool
 
-
-def main():
-    sTree, SimTreeID, VMpool = SimTree()
-    print('SimTreeID: ', SimTreeID)
-    print(Tree_to_eChartsJSON(sTree))
-    sTree.show()
-    write2dynTree(sTree)
-    write2db(SimTreeID, sTree, VMpool)
-    
+def format2file(sTree, VMpool, file="./data.csv"):
     tag_list = []
     final = []
     leaves = sTree.leaves()
@@ -127,9 +118,19 @@ def main():
                 final.append(str(tag) + ',' + str(VM['VM_prob']) + ',未碰撞\n')
                 break
     
-    with open("./data.csv", "w", encoding="utf-8") as f:
+    with open(file, "w", encoding="utf-8") as f:
         f.writelines('tag,prob,碰撞情况\n')
         f.writelines(final)
+
+def main():
+    sTree, SimTreeID, VMpool = SimTree()
+    print('SimTreeID: ', SimTreeID)
+    print(Tree_to_eChartsJSON(sTree))
+    sTree.show()
+    write2dynTree(sTree)
+    write2db(SimTreeID, sTree, VMpool)
+    
+    # format2file(sTree, VMpool, file="./data.csv")
 
     # for item in VMpool:
     #     print("VMID: ", item["VMID"])

@@ -3,8 +3,6 @@ import mysql.connector.pooling
 import json
 
 
-
-
 def link_mysql():
     mydb = mysql.connector.connect(
     host='127.0.0.1',

@@ -1,30 +1,22 @@
 """
 操作MySQL数据库工具集，目前插入操作为简单的分表单条插入，有待优化为通用插入
 """
-
+import sys
+sys.path.append("..")
 import mysql.connector
-# import mysql.connector.pooling
-# import json
-
-# 测试数据
-data0 = {"data": [{"name": "root", "value": 0}]}
-data1 = {"data": [{"name": "root", "value": 1, "children":[{"name": "root-child1", "value": 2}, {"name": "root-child2", "value": 3}]}]}
-data2 = {"data": [{"name": "root", "value": 1, "children":[{"name": "root-child1", "value": 2}, {"name": "root-child2", "value": 3, "children": [{"name": "root-child2-child1", "value": 4}, {"name": "root-child2-child2", "value": 5}]}]}]}
-data3 = {"data": [{"name": "root", "value": 1, "children":[{"name": "root-child1", "value": 2}, {"name": "root-child2", "value": 3, "children": [{"name": "root-child2-child1", "value": 4, "children": [{"name": "root-child2-child1-child1", "value": 6}, {"name": "root-child2-child1-child3", "value": 7}]}, {"name": "root-child2-child2", "value": 5}]}]}]}
-data4 = {"data": [{"name": "root", "value": 1, "children":[{"name": "root-child1", "value": 2}, {"name": "root-child2", "value": 3, "children": [{"name": "root-child2-child1", "value": 4, "children": [{"name": "root-child2-child1-child1", "value": 6}, {"name": "root-child2-child1-child3", "value": 7}]}, {"name": "root-child2-child2", "value": 5, "children": [{"name": "root-child2-child2-child1", "value": 8}, {"name": "root-child2-child2-child2", "value": 9}]}]}]}]}
+from unmannedshipv1.cfg import mysql_cfg
 
 
 def link_mysql(db="idac"):
-    mydb = mysql.connector.connect(
-    host='127.0.0.1',
-    port = 3306,
-    user='user1',      # 数据库IP、用户名和密码
-    passwd='hello',
-    database = db,
-    charset = 'utf8'
+    mydb = mysql.connector.connect( \
+        host = mysql_cfg.get("host", "127.0.0.1"),\
+        port = mysql_cfg.get("port", 3306),\
+        user = mysql_cfg.get("user", "user1"),\
+        passwd = mysql_cfg.get("password", "hello"),\
+        database = mysql_cfg.get("db", db),\
+        charset = mysql_cfg.get("charset", "utf8")\
     )
     return mydb
-    pass
 
 
 # --------------------------------------------------------
@@ -43,14 +35,7 @@ def link_mysql(db="idac"):
 init_mysql() 的默认参数 db='idac' 一般您无法修改即可，除非您特别指定了别的数据库进行连接。
 """
 def init_mysql(db='idac'):
-    mydb = mysql.connector.connect(
-        host='127.0.0.1',
-        port = 3306,
-        user='user1',
-        passwd='hello',
-        database = db,
-        charset = 'utf8'
-    )
+    mydb = link_mysql("idac")
     cursor = mydb.cursor()
     sql1 = "CREATE TABLE sim_tree (TREEID VARCHAR (64) PRIMARY KEY, data MEDIUMTEXT)"
     sql2 = "CREATE TABLE sim_vm (VMID VARCHAR (64) PRIMARY KEY, data MEDIUMTEXT)"
@@ -213,63 +198,3 @@ def select_from_voimg(imgID):
     data = cursor.fetchone() # 
     mydb.close()
     return data
-
-# print('latest treeid: ', select_lastest_tree())
-# init_mysql(db='aa')
-
-# ---------------------------------------------------------------
-# Old method
-# ---------------------------------------------------------------
-# def insert_into_mysql(val, param="one"):
-#     '''
-#     :val : 待插入数据
-#     :param : "one"表示插入一条数据,"many"表示插入多条数据.
-#     '''
-#     mydb = link_mysql()
-#     cursor = mydb.cursor()
-#     sql_insert = "INSERT INTO idac (VMID, data) VALUES (%s, %s)"
-#     # print(sql_insert)
-#     if param == "one":
-#         cursor.execute(sql_insert, val)
-#         mydb.commit() # 提交插入操作
-#         print("1 record inserted.")
-#         mydb.close()  # 关闭数据库连接
-#         return
-#     elif param == "many":
-#         cursor.executemany(sql_insert, val)
-#         mydb.commit() # 提交插入操作
-#         print(cursor.rowcount, "records inserted.")
-#         mydb.close()  # 关闭数据库连接
-#         return       
-#     else:
-#         print("请输入正确的参数以确定要插入的行数.")
-#         mydb.close()
-#         return
-
-# def select_all_from_mysql():
-#     mydb = link_mysql()
-#     cursor = mydb.cursor()
-#     sql_select = "select * from idac"
-#     cursor.execute(sql_select)
-#     data = cursor.fetchall()
-#     mydb.close()
-#     return data
-
-# def test_select_all():
-#     mydata = select_all_from_mysql()
-#     for item in mydata:
-#         print(item, '\n')
-#         item_data = json.loads(item[1])
-#         print(item_data, '\n')
-#         print(type(item_data))
-    
-# def test_insert_one(data):
-#     data = json.dumps(data)
-#     VMID = "1100"
-#     val = (VMID, data)
-#     insert_into_mysql(val, param="one")
-#     pass
-
-# ---------------------------------------------------------------
-# Old method
-# ---------------------------------------------------------------
