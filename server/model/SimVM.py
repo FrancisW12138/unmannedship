@@ -593,11 +593,9 @@ class SimVM:
         # self.__VMThread = threading.Thread(target=self.RunMultiTime(), args=(self,))
         # self.__VMThread.start()
 
-
     def Stop(self):
         self.__GoHead = False
         pass
-
 
 # 这个函数用于外部调用
 def RunVM(initData, initStatus4DrawLines='random', interval = 0.2, timeRatio = 100, runTimes = -1):
@@ -656,7 +654,6 @@ def RunVM(initData, initStatus4DrawLines='random', interval = 0.2, timeRatio = 1
     # return VMData
     return VM
 
-
 # 这个函数用于内部测试
 def SimTest():
     GenVMID = time.strftime("%y%m%d%H%M%S") + str(random.randint(1000, 9999))
@@ -674,6 +671,7 @@ def SimTest():
 
 from treelib import Tree
 import json
+
 
 def Tree_to_eChartsJSON(tree):
     #Transform the whole tree into an eCharts_JSON.
@@ -731,6 +729,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-

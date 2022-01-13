@@ -16,7 +16,6 @@ import CPA
 -> 当前版本为1.0版
 """
 
-
 def ProbDeciEngie(ShipStatus):
     """ 
     : ShipStatus : 船舶的状态数据，数据格式如下所示.
@@ -45,7 +44,6 @@ def ProbDeciEngie(ShipStatus):
     DeciProb = OOW(pos1, heading1, speed1, pos2, heading2, speed2)
     print(DeciProb)
     return DeciProb
-
 
 def OOW(pos1, heading1, speed1, pos2, heading2, speed2):
     """
@@ -153,7 +151,6 @@ def OOW(pos1, heading1, speed1, pos2, heading2, speed2):
 
     return DeciProb
 
-
 def Master(pos1, heading1, speed1, pos2, heading2, speed2):
     """
     Master——考虑风险和经济性的避碰决策
@@ -210,7 +207,6 @@ def Master(pos1, heading1, speed1, pos2, heading2, speed2):
     }
     return MasterDeciProb
 
-
 def coord_conv(x, y, theta):
     # 国际海上避碰规则 COLREGs
     #  坐标系中某一个点(x1,y1)围绕某一点(Xr,Yr)旋转任意角度a后，得到一个新的坐标(x,y)，求(x,y)的通用公式
@@ -223,7 +219,6 @@ def coord_conv(x, y, theta):
     x_0 = x*np.cos(theta * np.pi / 180)-y*np.sin(theta * np.pi / 180)
     y_0 = x*np.sin(theta * np.pi / 180)+y*np.cos(theta * np.pi / 180)
     return [x_0, y_0]
-
 
 def conv(ship1, ship2, theta):
     # 先平移坐标系 再旋转坐标系
@@ -320,7 +315,6 @@ def HLD(a1, v1, pos1, a2, v2, pos2):
     else:
         # DCPA > Dthre
         return 0, 0, v1
-
 
 def AHLD(my_ship, target_ship):
     """
@@ -496,5 +490,3 @@ def A2(my_ship, target_ship, GW1_vc_max):
 # mtc, ma, mv = HLD(10, 9.8, [123, 35], 350, 10.2, [123.1, 35])
 # mtc, ma, mv = HLD(10, 9.8, [122.995, 34.995], 350, 10, [123.051, 35.001])
 # print(mtc, ma, mv)
-
-

@@ -156,7 +156,6 @@ class SimVM:
         self.GoHead = False
         pass
 
-    # def parse_decition(self, ship, decision,a_ship_decision):
     def parse_decition(self, ship):
         # decision looks like: [GW1_vc_max, GW2_ac_max, GW2_tc_max]
         # 注意 只有让路船会决策 故不存在左转的情况
