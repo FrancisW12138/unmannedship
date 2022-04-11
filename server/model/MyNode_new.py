@@ -329,7 +329,6 @@ class SimVM:
             # return {'id': id, 'status': bar}, {'id':id, 'result': max_res}
             return bar, max_res
 
-
     def Run(self, Times = 32):
         will_brance = False
         decision = {
