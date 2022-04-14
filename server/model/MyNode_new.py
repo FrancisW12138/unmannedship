@@ -115,7 +115,6 @@ class SimShip:
         shipStatus['ship_prob'] = self.ship_prob
         return shipStatus
 
-
 class SimVM:
     def __init__(self, id, interval = 0.5, timeratio = 10):
         # 定义虚拟机内船舶清单
@@ -329,7 +328,6 @@ class SimVM:
             # return {'id': id, 'status': bar}, {'id':id, 'result': max_res}
             return bar, max_res
 
-
     def Run(self, Times = 32):
         will_brance = False
         decision = {
@@ -369,7 +367,6 @@ class SimVM:
                     if dis < 100:
                         ship1.collision = True
                         ship2.collision = True
-            # break
 
     def calc_distance(self, ship1, ship2):
         delta_lon = ship1.lon - ship2.lon

@@ -127,8 +127,8 @@ def main():
     print('SimTreeID: ', SimTreeID)
     print(Tree_to_eChartsJSON(sTree))
     sTree.show()
-    write2dynTree(sTree)
-    write2db(SimTreeID, sTree, VMpool)
+    # write2dynTree(sTree)
+    # write2db(SimTreeID, sTree, VMpool)
     
     # format2file(sTree, VMpool, file="./data.csv")
 
