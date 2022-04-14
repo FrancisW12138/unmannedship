@@ -292,7 +292,7 @@ def Create(n_ships):
 
 # print(Create(2))
 import TransBCD as BCD
-ship_num = 4
+ship_num = 3
 position, course, speed = Create(ship_num)
 
 base_position = [123, 31]
