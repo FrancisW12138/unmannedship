@@ -48,14 +48,9 @@ $("#getSimTree").click(function (event) {
 
 // 动画功能
 function animation(SimData) {
-<<<<<<< HEAD
 	console.log(SimData)
 	let timeOut = 1;
 	let pointSize = 50;  //??
-=======
-	let timeOut = 0;
-	let pointSize = 10;
->>>>>>> 7de171b26b90ea034829cf5f8f432317250d198a
 	let shipVOImg = new Array(); // 用于保存主船的VOImdID
 
 	// for (let moment = 0; moment < SimData.length - 1; moment++) {
@@ -71,15 +66,9 @@ function animation(SimData) {
 		let toInfo = SimData[moment + 1];
 		let shipNum = fromInfo.length;
 		if (shipNum > 0) {
-<<<<<<< HEAD
 			let shipPointList = [];  //经纬度坐标list
 			let rotationList = [];	//角度list
 			for(let ship = 0;ship< shipNum;ship++) {
-=======
-			let shipPointList = [];
-			let rotationList = [];
-			for (let ship = 0; ship < shipNum; ship++) {
->>>>>>> 7de171b26b90ea034829cf5f8f432317250d198a
 				let lonStep = (toInfo[ship].lon - fromInfo[ship].lon) / pointSize;
 				let latStep = (toInfo[ship].lat - fromInfo[ship].lat) / pointSize;
 				let pointList = [];
@@ -185,12 +174,10 @@ function getVMData(VMID) {
 		dataType: "json",
 		success: function (data) {
 			let SimData = data.SimData;
-<<<<<<< HEAD
 			// print(SimData)
-=======
+
 			//显示概率
 			$('#vmprob').attr('value', data.VM_prob);
->>>>>>> 7de171b26b90ea034829cf5f8f432317250d198a
 			animation(SimData);
 		},
 		error: function (xhr, type, errorThrown) {
