@@ -228,8 +228,8 @@ def ComputeDCPA(x_own, y_own, speed_own, course_own, x_target, y_target, speed, 
     DCPA = np.linalg.norm(pos1-pos2)
     return DCPA
 
-SPEED_MIN = 10  #the minimum value of ship velocity 
-SPEED_MAX = 15 #the maximum value of ship velocity
+SPEED_MIN = 5  #the minimum value of ship velocity 
+SPEED_MAX = 10 #the maximum value of ship velocity
 DCPA_THRE = 500 #the threshold of DCPA, m
 D_MIN = 0.5*1852  #the minimum distance between ships in the initial encounter situations
 
@@ -292,7 +292,7 @@ def Create(n_ships):
 
 # print(Create(2))
 import TransBCD as BCD
-ship_num = 3
+ship_num = 4
 position, course, speed = Create(ship_num)
 
 base_position = [123, 31]

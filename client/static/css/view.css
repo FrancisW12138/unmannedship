@@ -47,11 +47,7 @@ body {
 	background-color: #aaff7f;
 }
 
-<<<<<<< HEAD
 /* #vo{
-=======
-#vo {
->>>>>>> 7de171b26b90ea034829cf5f8f432317250d198a
 	position: absolute;
 	width: 20%;
 	height: 36%;
@@ -62,14 +58,8 @@ body {
 	align-items: center;
 	justify-content: center;
 	/* border:3px solid black; */
-<<<<<<< HEAD
 /* } */ */
 .box{
-=======
-}
-
-.box {
->>>>>>> 7de171b26b90ea034829cf5f8f432317250d198a
 	width: 100%;
 	height: auto;
 	/* background-color: #d0e7fa; */
@@ -85,13 +75,8 @@ body {
 
 #tree {
 	position: absolute;
-<<<<<<< HEAD
 	width: 82%;
 	height: 30%;
-=======
-	width: 80%;
-	height: 35%;
->>>>>>> 7de171b26b90ea034829cf5f8f432317250d198a
 	top: 0;
 	right: 0;
 	background-color: #d7ffcb;
@@ -99,15 +84,9 @@ body {
 
 #map {
 	position: absolute;
-<<<<<<< HEAD
 	width: 82%;
 	height: 70%;
 	top: 30%;
-=======
-	width: 80%;
-	height: 65%;
-	top: 35%;
->>>>>>> 7de171b26b90ea034829cf5f8f432317250d198a
 	right: 0;
 	/* background-color: #028EE1; */
 }
