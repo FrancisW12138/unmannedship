@@ -83,7 +83,6 @@ function animation(SimData) {
 				shipPointList.push(pointList);
 			}
 
-<<<<<<< HEAD
 			for(let i=0;i<pointSize-1;i++){
 				for(let ship = 0;ship< shipNum;ship++) {
 
@@ -99,17 +98,6 @@ function animation(SimData) {
 					)
 					(ship,shipPointList[ship],timeOut,i,rotationList[ship])
 
-=======
-			for (let i = 0; i < pointSize - 1; i++) {
-				for (let ship = 0; ship < shipNum; ship++) {
-					(function (ship, pointList, timeOut, i, rotation) {
-						setTimeout(() => {
-							// moveShip(ship,pointList[i + 1],rotation);
-							// my_remove_polyline();
-							my_add_polyline([pointList[i], pointList[i + 1]]);
-						}, timeOut);
-					})(ship, shipPointList[ship], timeOut, i, rotationList[ship])
->>>>>>> 7de171b26b90ea034829cf5f8f432317250d198a
 				}
 			}
 			/*
