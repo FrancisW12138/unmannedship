@@ -83,23 +83,63 @@ function animation(SimData) {
 				shipPointList.push(pointList);
 			}
 
-			for(let i=0;i<pointSize-1;i++){
-				for(let ship = 0;ship< shipNum;ship++) {
+			let timePointList = [];
+			for(let time = 0;time < pointSize; time++){
+				let timeList = []
+				for(let ship = 0;ship <shipNum; ship++){
+					timeList.push(shipPointList[ship][time])
+				}
+				timePointList.push(timeList)
+			}
 
-					(function(ship,pointList,timeOut,i,rotation)
+			/**
+			 * time 1 = [ship 1,ship 2,...,ship k]
+			 * time 2 = [ship 1,ship 2,...,ship k]
+			 * ...
+			 * time n = [ship 1,ship 2,...,ship k]
+			 */
+			for(let time = 0; time < pointSize - 1; time++){
+				for(let ship = 0;ship <shipNum; ship++){
+					(function(fromTimeList,toTimeList,timeOut,ship)
 						{
 							setTimeout(
 								()=>{
 								// moveShip(ship,pointList[i + 1],rotation);
-								my_add_polyline([pointList[i], pointList[i + 1]]);
+								my_add_polyline([fromTimeList[ship],toTimeList[ship]]);
 								},
 							timeOut);
 						}
 					)
-					(ship,shipPointList[ship],timeOut,i,rotationList[ship])
-
+					(timePointList[time],timePointList[time+1],timeOut,ship)
 				}
 			}
+
+
+			/**
+			 * ship 1 = [time 1,time 2,...,time n]
+			 * ship 2 = [time 1,time 2,...,time n]
+			 * ...
+			 * ship k = [time 1,time 2,...,time n]
+			 */
+			// for(let i=0;i<pointSize-1;i++){
+			// 	for(let ship = 0;ship< shipNum;ship++) {
+
+			// 		(function(ship,pointList,timeOut,i,rotation)
+			// 			{
+			// 				setTimeout(
+			// 					()=>{
+			// 					// moveShip(ship,pointList[i + 1],rotation);
+			// 					my_add_polyline([pointList[i], pointList[i + 1]]);
+			// 					},
+			// 				timeOut);
+			// 			}
+			// 		)
+			// 		(ship,shipPointList[ship],timeOut,i,rotationList[ship])
+
+			// 	}
+			// }
+
+			
 			/*
 					if (shipNum > 0) {
 						let shipPointList = [];
