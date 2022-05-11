@@ -19,7 +19,7 @@ import CPA
 def ProbDeciEngie(ShipStatus):
     """ 
     : ShipStatus : 船舶的状态数据，数据格式如下所示.
-    ：return : DeciProb 决策的结果，字典，格式如下给出.
+    : return : DeciProb 决策的结果，字典，格式如下给出.
     """
     # 虽然后面又在船的数据中加入了VOImgID 一项，但并不影响到这里的操作
     # ShipStatus = [
@@ -428,7 +428,7 @@ def A1(my_ship, target_ship):
                 print('减速阶段成功避碰GW1.')
                 break
         # TODO 这一快还要捋一捋
-    vc = v1 - v1new # 速度的该变量
+    vc = v1 - v1new # 速度的改变量
     return vc, tc
 
 def A2(my_ship, target_ship, GW1_vc_max):

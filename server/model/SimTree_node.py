@@ -89,6 +89,7 @@ def SimTree():
     # VM.addShip(ShipID='3', VM=VM, Tick=0, Lon=123.074940, Lat=30.963, Speed=16, Heading=300)
     # VM.addShip(ShipID='4', VM=VM, Tick=0, Lon=122.950364, Lat=31.0425, Speed=13, Heading=135)
 
+<<<<<<< HEAD
     # VM.addShip(ShipID='5', VM=VM, Tick=0, Lon=122.78251262605687, Lat=31.030339834029483, Speed=9.960740667693244, Heading=99.35475841161396)
     # VM.addShip(ShipID='6', VM=VM, Tick=0, Lon=122.91593423176747, Lat=30.903070437389857, Speed=6.567974823839184, Heading=36.315680123326075)
     # VM.addShip(ShipID='7', VM=VM, Tick=0, Lon=123.16479312101988, Lat=31.10671033810767, Speed=9.340500934800755, Heading=232.93268147711885)
@@ -117,6 +118,13 @@ def SimTree():
     # VM.addShip(ShipID='8', VM=VM, Tick=0, Lon=123.18911675514303, Lat=31.12249738025927, Speed=12.105957381682785, Heading=233.1762337921036)
 
 
+=======
+    VM.addShip(ShipID='5', VM=VM, Tick=0, Lon=123.12024061852294, Lat=31.081119277424886, Speed=7.39537055423542, Heading=232.87910063539232)
+    VM.addShip(ShipID='6', VM=VM, Tick=0, Lon=123.11281626654447, Lat=30.99325453641464, Speed=5.477632791913566, Heading=274.64862254731236)
+    VM.addShip(ShipID='7', VM=VM, Tick=0, Lon=122.82079841948959, Lat=30.95271396294126, Speed=9.012856459608294, Heading=72.07561280196485)    
+    
+    
+>>>>>>> 7de171b26b90ea034829cf5f8f432317250d198a
     parent = None
 
     def CreatVMTree(tree, vm, parent):
@@ -160,8 +168,8 @@ def main():
     print('SimTreeID: ', SimTreeID)
     print(Tree_to_eChartsJSON(sTree))
     sTree.show()
-    write2dynTree(sTree)
-    write2db(SimTreeID, sTree, VMpool)
+    # write2dynTree(sTree)
+    # write2db(SimTreeID, sTree, VMpool)
     
     # format2file(sTree, VMpool, file="./data.csv")
 
