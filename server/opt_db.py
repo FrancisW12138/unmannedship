@@ -40,6 +40,7 @@ def init_mysql(db='idac'):
     sql1 = "CREATE TABLE sim_tree (TREEID VARCHAR (64) PRIMARY KEY, data MEDIUMTEXT)"
     sql2 = "CREATE TABLE sim_vm (VMID VARCHAR (64) PRIMARY KEY, data MEDIUMTEXT)"
     sql3 = "CREATE TABLE voimg (imgID VARCHAR (64) PRIMARY KEY, VMID VARCHAR (64), data MEDIUMBLOB)"
+    sql4 = "CREATE TABLE dyn_tree (VMID VARCHAR (64) PRIMARY KEY, data MEDIUMTEXT)"
     cursor.execute(sql1)
     cursor.execute(sql2)
     cursor.execute(sql3)

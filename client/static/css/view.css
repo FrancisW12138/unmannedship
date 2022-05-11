@@ -5,8 +5,8 @@ body{
 
 #title{
 	position: absolute;
-	width: 20%;
-	height: 10%;
+	width: 18%;
+	height: 30%;
 	top: 0;
 	left: 0;
 	/* background-color: #007EE5; */
@@ -20,9 +20,9 @@ body{
 
 #dashboard{
 	position: absolute;
-	width: 20%;
-	height: 54%;
-	top: 10%;
+	width: 18%;
+	height: 70%;
+	top: 30%;
 	left: 0;
 	background-color: #d4e2ff;
 	
@@ -45,7 +45,7 @@ body{
 	background-color: #aaff7f;
 }
 
-#vo{
+/* #vo{
 	position: absolute;
 	width: 20%;
 	height: 36%;
@@ -56,7 +56,7 @@ body{
 	align-items: center;
 	justify-content: center;
 	/* border:3px solid black; */
-}
+/* } */ */
 .box{
 	width: 100%;
 	height: auto;
@@ -72,8 +72,8 @@ body{
 
 #tree{
 	position: absolute;
-	width: 80%;
-	height: 55%;
+	width: 82%;
+	height: 30%;
 	top: 0;
 	right: 0;
 	background-color: #d7ffcb;
@@ -81,9 +81,9 @@ body{
 
 #map{
 	position: absolute;
-	width: 80%;
-	height: 45%;
-	top: 55%;
+	width: 82%;
+	height: 70%;
+	top: 30%;
 	right: 0;
 	/* background-color: #028EE1; */
 }

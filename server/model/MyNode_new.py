@@ -407,9 +407,9 @@ class SimVM:
                     # decision['ship_status'].append({'id': ship.id, 'ship_status': ship.get_ship_status()})
                 else:
                     # ship尚未做出决策
-                    # count % 4意思是步长每4次运行一次
+                    # count % 4意思是步长每4次运行一次,不检测那么频繁
                     if self.count % 4 == 0:
-                        ship.execute_instruction()
+                        ship.execute_instruction() # 等价于 ship.go_ahead()
                         ship_in_range = ship.detect_ship_in_radar_range()
                         if len(ship_in_range) > 0:
                             temp_deci_status = []

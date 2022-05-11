@@ -48,8 +48,9 @@ $("#getSimTree").click(function(event) {
 
 // 动画功能
 function animation(SimData) {
-	let timeOut = 10;
-	let pointSize = 100;
+	console.log(SimData)
+	let timeOut = 1;
+	let pointSize = 50;  //??
 	let shipVOImg = new Array(); // 用于保存主船的VOImdID
 
 	for(let moment=0; moment<SimData.length-1; moment++){
@@ -65,8 +66,8 @@ function animation(SimData) {
 		let toInfo = SimData[moment+1];
 		let shipNum = fromInfo.length;
 		if (shipNum > 0) {
-			let shipPointList = [];
-			let rotationList = [];
+			let shipPointList = [];  //经纬度坐标list
+			let rotationList = [];	//角度list
 			for(let ship = 0;ship< shipNum;ship++) {
 				let lonStep = (toInfo[ship].lon - fromInfo[ship].lon) / pointSize;
 				let latStep = (toInfo[ship].lat - fromInfo[ship].lat) / pointSize;
@@ -74,20 +75,29 @@ function animation(SimData) {
 				let rotation = toInfo[ship].heading;
 				rotationList.push(rotation);
 				for (let i = 0; i < pointSize; i++) {
-					let p = new BMap.Point(fromInfo[ship].lon + i * lonStep, fromInfo[ship].lat + i * latStep);
+					//把经纬度的变动分为N步，逐步进行
+					let p = new BMap.Point(fromInfo[ship].lon + i * lonStep, fromInfo[ship].lat + i * latStep); 
 					pointList.push(p);
 				}
+				console.log(pointList)
 				shipPointList.push(pointList);
 			}
 
 			for(let i=0;i<pointSize-1;i++){
 				for(let ship = 0;ship< shipNum;ship++) {
-					(function(ship,pointList,timeOut,i,rotation){
-					setTimeout(()=>{
-						// moveShip(ship,pointList[i + 1],rotation);
-						my_add_polyline([pointList[i], pointList[i + 1]]);
-					},timeOut);
-				})(ship,shipPointList[ship],timeOut,i,rotationList[ship])
+
+					(function(ship,pointList,timeOut,i,rotation)
+						{
+							setTimeout(
+								()=>{
+								// moveShip(ship,pointList[i + 1],rotation);
+								my_add_polyline([pointList[i], pointList[i + 1]]);
+								},
+							timeOut);
+						}
+					)
+					(ship,shipPointList[ship],timeOut,i,rotationList[ship])
+
 				}
 			}
 			// updateVoImg(shipVOImg[moment]);
@@ -128,6 +138,7 @@ function getVMData(VMID){
 		dataType:"json",
 		success:function(data){
 			let SimData = data.SimData;
+			// print(SimData)
 			animation(SimData);
 		},
 		error:function(xhr,type,errorThrown){

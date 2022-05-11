@@ -47,7 +47,7 @@ def ProbDeciEngie(ShipStatus):
 
 def OOW(pos1, heading1, speed1, pos2, heading2, speed2):
     """
-    OOW——观测及确认风险，确认风险后事件树产生新的节点，将信息传递给决策者
+    OOW——观测及确认风险，确认风险后事件树产生新的节点，将信息传递给决策者 office on watch
     输入：     
         pos1:     本船的位置，格式为 [lon, lat]
         heading1: 本船的航艏向，°

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Dec 15 19:52:33 2019
-
+速度障碍法指标
 @author: Jinfen Zhang
 @edit by Bruce
 
