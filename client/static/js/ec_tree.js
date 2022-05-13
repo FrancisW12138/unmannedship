@@ -7,6 +7,7 @@ var mydata = [{
 	'value': 10086,
 }]
 
+
 var ec_tree_option = {
 	tooltip: {
 		trigger: 'item',
@@ -20,7 +21,7 @@ var ec_tree_option = {
 		left: '10%',
 		bottom: '5%',
 		right: '10%',
-		symbol: 'emptyCircle' ,
+		symbol: 'emptyCircle',
 		symbolSize: 14,
 
 		label: {
@@ -29,12 +30,12 @@ var ec_tree_option = {
 			verticalAlign: 'middle',
 			align: 'right',
 			fontSize: 16,
-			formatter: '{c}', // 字符串模板
+			// formatter: '{c}', // 字符串模板
 		},
+
 		lineStyle: {
 			color: "'#838300'",
 			width: 1.5,
-			
 		},
 
 		leaves: {
@@ -45,22 +46,22 @@ var ec_tree_option = {
 			}
 		},
 
-		expandAndCollapse: false,
-		initialTreeDepth: 5,
+		expandAndCollapse: true,
+		initialTreeDepth: 0,
 		animationDuration: 550,
 		animationDurationUpdate: 750
 	}]
 }
 
-function get_tree(){
+function get_tree() {
 	$.ajax('', {
 		url: "/tree",
-		success:function(data){
+		success: function (data) {
 			ec_tree_option.series[0].data = data.data
 			ec_tree.setOption(ec_tree_option)
 		},
-		error:function(xhr,type,errorThrown){
-			
+		error: function (xhr, type, errorThrown) {
+
 		}
 	});
 }

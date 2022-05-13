@@ -45,7 +45,7 @@ def get_map_data():
 
 # 根路由，首页页面
 @app.route("/")
-def index():
+def index():    
     return render_template("view.html")
 
 

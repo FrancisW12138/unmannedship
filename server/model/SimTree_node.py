@@ -27,11 +27,21 @@ def grab(filename):
     with open(filename,'rb') as f:
         return pickle.load(f)
 
-def Tree_to_eChartsJSON(tree):
+def Tree_to_eChartsJSON(tree,VMpool):
     #Transform the whole tree into an eCharts_JSON.
     def to_dict(tree, nid):
         ntag = tree[nid].tag
-        tree_dict = {'name': ntag, 'value': int(nid), "children": []}
+        for item in VMpool:
+            if item["VMID"] == ntag:
+                json_str = json.dumps(item)
+                if "true" in json_str:
+                    name = "转弯"
+                else:
+                    name = "直走"
+                break
+            name = "none"
+ 
+        tree_dict = {'name': name, 'value': int(nid), "children": []}
         #if tree[nid].expanded:
         for elem in tree.children(nid):
             tree_dict["children"].append(to_dict(tree, elem.identifier))
@@ -43,7 +53,7 @@ def Tree_to_eChartsJSON(tree):
     pass
 
 def write2db(SimTreeID, sTree, VMpool):
-    JSONTree = Tree_to_eChartsJSON(sTree)
+    JSONTree = Tree_to_eChartsJSON(sTree, VMpool)
     opt_db.insert_into_simtree(SimTreeID, JSONTree)
     print('已写入sim tree.')
     for item in VMpool:
@@ -126,7 +136,7 @@ def format2file(sTree, VMpool, file="./data.csv"):
 def main():
     sTree, SimTreeID, VMpool = SimTree()
     print('SimTreeID: ', SimTreeID)
-    print(Tree_to_eChartsJSON(sTree))
+    print(Tree_to_eChartsJSON(sTree, VMpool))
     sTree.show()
     write2dynTree(sTree)
     write2db(SimTreeID, sTree, VMpool)

@@ -32,21 +32,22 @@
 				readonly="readonly" /></div>
 		<div class="toolbox">VM_prob: <input type="text" name="vmprob" id="vmprob" value="数据未加载..."
 				readonly="readonly" /></div>
-		<div class="toolbox">
-			<a href="/en_version" target="_self">
-				<button type="button" id="S2E">Switch to English</button>
-			</a>
-			<button type="button" id="clearPolyline">清除绘图</button>
-			<!-- <button type="button" id="drawPolyline">绘制线图</button><br> -->
-			<!-- <button type="button" id="testDynamicImg">测试动态换图</button> -->
-			<button type="button" id="getSimTree">获取最新仿真树</button>
-		</div>
-		<div class="toolbox">4</div>
 
+		<div class="toolbox"><a href="/en_version" target="_self">
+				<button type="button" id="S2E">Switch to English</button>
+			</a></div>
+		<div class="toolbox"><button type="button" id="clearPolyline">清除绘图</button></div>
+		<!-- <button type="button" id="drawPolyline">绘制线图</button><br> -->
+		<!-- <button type="button" id="testDynamicImg">测试动态换图</button> -->
+		<div class="toolbox"><button type="button" id="getSimTree">获取最新仿真树</button></div>
 	</div>
-	<div id="vo">
+	<div id="video">
 		<div class="box">
-			<img id="voImg" src="../static/res/Figure1.png" alt="VO img" />
+			<video width="300" height="225" controls autoplay>
+				<source src="../static/res/move.mp4" type="video/mp4">
+				<!-- <object data="../static/res/move.mp4">
+				</object> -->
+			</video>
 		</div>
 	</div>
 	<div id="tree">tree img</div>

@@ -40,11 +40,13 @@ def init_mysql(db='idac'):
     sql1 = "CREATE TABLE sim_tree (TREEID VARCHAR (64) PRIMARY KEY, data MEDIUMTEXT)"
     sql2 = "CREATE TABLE sim_vm (VMID VARCHAR (64) PRIMARY KEY, data MEDIUMTEXT)"
     sql3 = "CREATE TABLE voimg (imgID VARCHAR (64) PRIMARY KEY, VMID VARCHAR (64), data MEDIUMBLOB)"
+    sql4 = "CREATE TABLE dyn_tree (rootId VARCHAR (64) PRIMARY KEY, children VARCHAR (64), data MEDIUMBLOB)"
     cursor.execute(sql1)
     cursor.execute(sql2)
     cursor.execute(sql3)
+    cursor.execute(sql4)
     mydb.close()  # 关闭数据库连接
-    print("init mysql on database '{}' succeed, created 3 tables.".format(db))
+    print("init mysql on database '{}' succeed, created 4 tables.".format(db))
 
 # --------------------------------------------------------
 
@@ -67,7 +69,7 @@ def insert_into_dynTree(rootId, children):
     # print(sql_insert)
     cursor.execute(sql_insert, (rootId, children))
     mydb.commit() # 提交插入操作
-    print("1 record inserted.")
+    # print("1 record inserted.")
     mydb.close()  # 关闭数据库连接
     pass
 
@@ -84,7 +86,7 @@ def insert_into_simtree(TREEID, data):
     # print(sql_insert)
     cursor.execute(sql_insert, (TREEID, data))
     mydb.commit() # 提交插入操作
-    print("1 record inserted.")
+    # print("1 record inserted.")
     mydb.close()  # 关闭数据库连接
     pass
 
@@ -100,7 +102,7 @@ def insert_into_simvm(VMID, data):
     # print(sql_insert)
     cursor.execute(sql_insert, (VMID, data))
     mydb.commit() # 提交插入操作
-    print("1 record inserted.")
+    # print("1 record inserted.")
     mydb.close()  # 关闭数据库连接
     pass
 
@@ -118,7 +120,7 @@ def insert_into_voimg(imgID, VMID, data):
     # print(sql_insert)
     cursor.execute(sql_insert, (imgID, VMID, data))
     mydb.commit() # 提交插入操作
-    print("1 record inserted.")
+    # print("1 record inserted.")
     mydb.close()  # 关闭数据库连接
     pass
 

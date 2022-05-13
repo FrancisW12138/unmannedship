@@ -9,7 +9,7 @@ body {
 	height: 10%;
 	top: 0;
 	left: 0;
-	/* background-color: #007EE5; */
+	background-color: #ffffff;
 	font-family: "幼圆";
 	font-size: 25px;
 	color: #000000;
@@ -21,10 +21,10 @@ body {
 #dashboard {
 	position: absolute;
 	width: 20%;
-	height: 54%;
+	height: 45%;
 	top: 10%;
 	left: 0;
-	background-color: #d4e2ff;
+	background-color: #aaff7f;
 
 	/* 	display: flex;
 	align-items: center;
@@ -33,25 +33,29 @@ body {
 
 .toolbox {
 	/* width: 100%; */
-	height: 15%;
+	height: 10%;
 	/* display: flex; */
 	/* float: top; */
 	background-color: #aaff7f;
+
+
 }
 
 .cmdbox {
 	/* width: 100%; */
-	height: 25%;
+	height: 10%;
 	/* display: flex; */
 	/* float: top; */
 	background-color: #aaff7f;
+
+
 }
 
-#vo {
+#video {
 	position: absolute;
 	width: 20%;
-	height: 36%;
-	top: 64%;
+	height: 30%;
+	top: 55%;
 	left: 0;
 	background-color: #d0e7fa;
 	display: flex;
@@ -71,13 +75,12 @@ body {
 	width: 100%;
 	height: 100%;
 	/* background-color: #d0e7fa; */
-
 }
 
 #tree {
 	position: absolute;
 	width: 80%;
-	height: 55%;
+	height: 30%;
 	top: 0;
 	right: 0;
 	background-color: #d7ffcb;
@@ -86,8 +89,8 @@ body {
 #map {
 	position: absolute;
 	width: 80%;
-	height: 45%;
-	top: 55%;
+	height: 70%;
+	top: 30%;
 	right: 0;
 	/* background-color: #028EE1; */
 }
