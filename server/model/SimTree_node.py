@@ -86,15 +86,12 @@ def SimTree():
     # 在多船避碰中，如果要加步长控制，用VM = MyNode_new.SimVM(GenVMID, timeratio=10)
     # VM = MyNode.SimVM(GenVMID, timeratio=10)   #没加步长控制的树
     VM = MyNode_new.SimVM(GenVMID, timeratio=30)    #加上步长控制的树，需要几艘船，就留几艘
-    # VM.addShip(ShipID='1', VM=VM, Tick=0, Lon=123, Lat=30.916667, Speed=18, Heading=0)
-    # VM.addShip(ShipID='2', VM=VM, Tick=0, Lon=123.074551, Lat=31.0535, Speed=18, Heading=230)
-    # VM.addShip(ShipID='3', VM=VM, Tick=0, Lon=123.074940, Lat=30.963, Speed=16, Heading=300)
-    # VM.addShip(ShipID='4', VM=VM, Tick=0, Lon=122.950364, Lat=31.0425, Speed=13, Heading=135)
 
-    VM.addShip(ShipID='5', VM=VM, Tick=0, Lon=123.12024061852294, Lat=31.081119277424886, Speed=7.39537055423542, Heading=232.87910063539232)
-    VM.addShip(ShipID='6', VM=VM, Tick=0, Lon=123.11281626654447, Lat=30.99325453641464, Speed=5.477632791913566, Heading=274.64862254731236)
-    VM.addShip(ShipID='7', VM=VM, Tick=0, Lon=122.82079841948959, Lat=30.95271396294126, Speed=9.012856459608294, Heading=72.07561280196485)    
-    
+    VM.addShip(ShipID='5', VM=VM, Tick=0, Lon=122.82698437410605, Lat=30.98608343871704, Speed=5.355335738529801, Heading=85.60095384269127)
+    VM.addShip(ShipID='6', VM=VM, Tick=0, Lon=123.16683898732983, Lat=30.86240436938414, Speed=7.052090082914778, Heading=314.27640667188484)
+    VM.addShip(ShipID='7', VM=VM, Tick=0, Lon=122.84806611087647, Lat=31.074556990478534, Speed=5.326263682879175, Heading=121.24512486305963)
+    VM.addShip(ShipID='8', VM=VM, Tick=0, Lon=122.89314045305397, Lat=31.15842289908333, Speed=6.439668798867367, Heading=149.9263564677427)
+
     
     parent = None
 
@@ -134,6 +131,7 @@ def format2file(sTree, VMpool, file="./data.csv"):
         f.writelines(final)
 
 def main():
+    # opt_db.init_mysql()
     sTree, SimTreeID, VMpool = SimTree()
     print('SimTreeID: ', SimTreeID)
     print(Tree_to_eChartsJSON(sTree, VMpool))

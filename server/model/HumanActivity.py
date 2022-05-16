@@ -19,7 +19,7 @@ import CPA
 def ProbDeciEngie(ShipStatus):
     """ 
     : ShipStatus : 船舶的状态数据，数据格式如下所示.
-    ：return : DeciProb 决策的结果，字典，格式如下给出.
+    : return : DeciProb 决策的结果，字典，格式如下给出.
     """
     # 虽然后面又在船的数据中加入了VOImgID 一项，但并不影响到这里的操作
     # ShipStatus = [
@@ -47,7 +47,7 @@ def ProbDeciEngie(ShipStatus):
 
 def OOW(pos1, heading1, speed1, pos2, heading2, speed2):
     """
-    OOW——观测及确认风险，确认风险后事件树产生新的节点，将信息传递给决策者
+    OOW——观测及确认风险，确认风险后事件树产生新的节点，将信息传递给决策者 office on watch
     输入：     
         pos1:     本船的位置，格式为 [lon, lat]
         heading1: 本船的航艏向，°
@@ -428,7 +428,7 @@ def A1(my_ship, target_ship):
                 print('减速阶段成功避碰GW1.')
                 break
         # TODO 这一快还要捋一捋
-    vc = v1 - v1new # 速度的该变量
+    vc = v1 - v1new # 速度的改变量
     return vc, tc
 
 def A2(my_ship, target_ship, GW1_vc_max):

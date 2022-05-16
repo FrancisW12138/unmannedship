@@ -9,20 +9,6 @@ ec_tree.on('click', function (params) {
 
 });
 
-// ec_tree.on('dblclick', (e) => {
-// 	const name = e.data.name;
-// 	const curNode = ec_tree._chartsViews[0]._data.tree._nodes.find(item => {
-// 		return item.name === name;
-// 	});
-// 	const depth = curNode.depth;
-// 	const curIsExpand = curNode.isExpand;
-// 	ec_tree._chartsViews[0]._data.tree._nodes.forEach((item, index) => {
-// 		if (item.depth === depth && item.name !== name && !curIsExpand) {
-// 			item.isExpand = false;
-// 		}
-// 	});
-// })
-
 
 // 清除绘图 按钮点击事件
 $("#clearPolyline").click(function (event) {
@@ -67,11 +53,11 @@ $("#getSimTree").click(function (event) {
 
 // 动画功能
 function animation(SimData) {
-	let timeOut = 0;
-	let pointSize = 10;
-	// let shipVOImg = new Array(); // 用于保存主船的VOImdID
+	console.log(SimData)
+	let timeOut = 1;
+	let pointSize = 50;  //??
+	let shipVOImg = new Array(); // 用于保存主船的VOImdID
 
-	// // VOImg 相关
 	// for (let moment = 0; moment < SimData.length - 1; moment++) {
 	// 	if (SimData[moment][0].VOImgID) {
 	// 		shipVOImg.push(SimData[moment][0].VOImgID);
@@ -85,9 +71,8 @@ function animation(SimData) {
 		let toInfo = SimData[moment + 1];
 		let shipNum = fromInfo.length;
 		if (shipNum > 0) {
-			let shipPointList = [];
-			let rotationList = [];
-			// 把船每一次前进分成pointSize步，存入shipPointList；方向存入rotationList
+			let shipPointList = [];  //经纬度坐标list
+			let rotationList = [];	//角度list
 			for (let ship = 0; ship < shipNum; ship++) {
 				let lonStep = (toInfo[ship].lon - fromInfo[ship].lon) / pointSize;
 				let latStep = (toInfo[ship].lat - fromInfo[ship].lat) / pointSize;
@@ -95,26 +80,93 @@ function animation(SimData) {
 				let rotation = toInfo[ship].heading;
 				rotationList.push(rotation);
 				for (let i = 0; i < pointSize; i++) {
+					//把经纬度的变动分为N步，逐步进行
 					let p = new BMap.Point(fromInfo[ship].lon + i * lonStep, fromInfo[ship].lat + i * latStep);
 					pointList.push(p);
 				}
+				console.log(pointList)
 				shipPointList.push(pointList);
 			}
-			//船
-			for (let i = 0; i < pointSize - 1; i++) {
+
+			let timePointList = [];
+			for (let time = 0; time < pointSize; time++) {
+				let timeList = []
 				for (let ship = 0; ship < shipNum; ship++) {
-					(function (ship, pointList, timeOut, i, rotation) {
-						setTimeout(() => {
-							moveShip(ship, pointList[i + 1], rotation);
-							my_add_polyline([pointList[i], pointList[i + 1]]);
-						}, timeOut);
-					})(ship, shipPointList[ship], timeOut, i, rotationList[ship])
-					// pointList = shipPointList[ship]
-					// rotation = rotationList[ship]
-					// moveShip(ship, pointList[i + 1], rotation);
-					// my_add_polyline([pointList[i], pointList[i + 1]]);
+					timeList.push(shipPointList[ship][time])
+				}
+				timePointList.push(timeList)
+			}
+
+			/**
+			 * time 1 = [ship 1,ship 2,...,ship k]
+			 * time 2 = [ship 1,ship 2,...,ship k]
+			 * ...
+			 * time n = [ship 1,ship 2,...,ship k]
+			 */
+			for (let time = 0; time < pointSize - 1; time++) {
+				for (let ship = 0; ship < shipNum; ship++) {
+					(function (fromTimeList, toTimeList, timeOut, ship, rotation) {
+						setTimeout(
+							() => {
+								moveShip(ship, toTimeList[ship], rotation);
+								my_add_polyline([fromTimeList[ship], toTimeList[ship]]);
+							},
+							timeOut);
+					}
+					)(timePointList[time], timePointList[time + 1], timeOut, ship, rotationList[ship])
 				}
 			}
+
+
+			/**
+			 * ship 1 = [time 1,time 2,...,time n]
+			 * ship 2 = [time 1,time 2,...,time n]
+			 * ...
+			 * ship k = [time 1,time 2,...,time n]
+			 */
+			// for(let i=0;i<pointSize-1;i++){
+			// 	for(let ship = 0;ship< shipNum;ship++) {
+
+			// 		(function(ship,pointList,timeOut,i,rotation)
+			// 			{
+			// 				setTimeout(
+			// 					()=>{
+			// 					// moveShip(ship,pointList[i + 1],rotation);
+			// 					my_add_polyline([pointList[i], pointList[i + 1]]);
+			// 					},
+			// 				timeOut);
+			// 			}
+			// 		)
+			// 		(ship,shipPointList[ship],timeOut,i,rotationList[ship])
+
+			// 	}
+			// }
+
+
+			/*
+					if (shipNum > 0) {
+						let shipPointList = [];
+						let rotationList = [];
+						for (let ship = 0; ship < shipNum; ship++) {
+							// let lonStep = (toInfo[ship].lon - fromInfo[ship].lon) / pointSize;
+							// let latStep = (toInfo[ship].lat - fromInfo[ship].lat) / pointSize;
+							let rotation = toInfo[ship].heading;
+							rotationList.push(rotation);
+							let p = new BMap.Point(fromInfo[ship].lon, fromInfo[ship].lat);
+							shipPointList.push(p);
+						}
+			
+			
+						for (let ship = 0; ship < shipNum; ship++) {
+							(function (ship, pointList, timeOut, i, rotation) {
+								setTimeout(() => {
+									// moveShip(ship,pointList[i + 1],rotation);
+									// my_remove_polyline();
+									my_add_polyline([shipPointList[ship], shipPointList[ship + 1]]);
+								}, timeOut);
+							})(ship, shipPointList[ship], timeOut, i, rotationList[ship])
+						}
+			*/
 			// updateVoImg(shipVOImg[moment]);
 		}
 	}
@@ -153,9 +205,10 @@ function getVMData(VMID) {
 		dataType: "json",
 		success: function (data) {
 			let SimData = data.SimData;
+			// print(SimData)
+
 			//显示概率
 			$('#vmprob').attr('value', data.VM_prob);
-			// init()
 			animation(SimData);
 		},
 		error: function (xhr, type, errorThrown) {

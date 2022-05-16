@@ -1,6 +1,6 @@
 // 百度地图API功能
 let map = new BMap.Map("map"); // 创建Map实例
-map.centerAndZoom(new BMap.Point(123, 31.001), 13); // 初始化地图,设置中心点坐标和地图级别
+map.centerAndZoom(new BMap.Point(123, 31), 12); // 初始化地图,设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 
 let ship0, ship1, ship2, ship3, ship4;
@@ -44,9 +44,7 @@ function my_remove_polyline() {
 }
 
 function moveShip(shipNum, point, rotation) {
-	// if (null === ship1.Bc && null === ship2.Bc) {
-	// 	init();
-	// }
+
 	if (0 === shipNum) {
 		ship1.setPosition(point);
 		ship1.setRotation(rotation - 90);
